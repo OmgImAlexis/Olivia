@@ -1,0 +1,28 @@
+html
+    head
+        title= title || 'tv and movie thing'
+        link(href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css", rel="stylesheet", type="text/css")
+        link(href="/css/main.css", rel="stylesheet", type="text/css")
+    body
+        #header
+            nav.nav
+                ul
+                    li
+                        a(href="/") Home
+                    li
+                        a(href="/shows/new") Add new show
+                    li
+                        a(href="/shows/comingSoon") Coming episodes
+                    li
+                        a(href="/shows/history") History
+                    li
+                        a(href="/logs") Logs
+                    li
+                        a(href="/settings/general") Config
+        block beforeContent
+        .container
+            block content
+    script(src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js")
+    script(src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.1/jquery.timeago.min.js")
+    script(src="/js/main.js")
+    block scripts

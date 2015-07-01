@@ -1,0 +1,271 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #292929;
+    color: #dfdfdf;
+    font: 11px Arial, sans-serif;
+    line-height: 1.43;
+}
+
+.container {
+    margin: 0 auto;
+    padding: 10px;
+    clear: both;
+}
+
+@media screen and (max-width: 2000px) {
+    .container {
+        max-width: 1200px;
+    }
+}
+
+@media screen and (max-width: 1350px) {
+    .container {
+        max-width: 900px;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .container {
+        max-width: 600px;
+    }
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+}
+
+a:hover {
+    color: grey;
+    text-decoration: underline;
+}
+
+img {
+    max-width: 100%;
+}
+
+.styled {
+    background-color: #333;
+    border: 1px solid #222;
+    border-radius: 3px;
+}
+.button {
+    background: -webkit-linear-gradient(top, #4b4b4b, #454545);
+    box-shadow: 0 1px 0 hsla(0,0%,0%,.1);
+    border: 1px solid #303030;
+    display: inline-block;
+    height: 20px;
+    line-height: 20px;
+    padding: 0 5px;
+    color: #fff;
+    margin: 6px 8px 6px 0;
+    text-align: center;
+}
+
+.button:hover {
+    background: -webkit-linear-gradient(top, #38434b, #353c44);
+    cursor: pointer;
+    cursor: hand;
+}
+
+.button:disabled {
+    color: rgb(84, 84, 84);
+}
+
+#header{
+    background-color: #333;
+    border-bottom: 1px solid #222;
+    margin-bottom: 10px;
+    text-align: right;
+}
+
+nav.nav {
+    margin-right: 20px;
+}
+
+nav.nav li {
+    display: inline;
+}
+
+nav.nav li a{
+    display: inline-block;
+    padding: 15px 10px;
+}
+
+nav.nav li a:hover {
+    text-decoration: none;
+    color: white;
+    background-color: grey;
+}
+
+/*
+    Show and movie holders on the main page
+*/
+.holder {
+    width: 200px;
+    border-radius: 5px;
+}
+
+.holder img {
+    max-width: 100%;
+}
+
+.holder .info {
+    padding: 10px;
+}
+
+.holder .info span {
+    display: block;
+}
+
+/*
+    Progress bars, set the span.bar width for progress
+*/
+.progressbar {
+    height: 5px;
+    width: 100%;
+    display: block;
+    background-color: #292929;
+    border-top: 1px solid #222;
+    border-bottom: 1px solid #222;
+}
+
+.progressbar span.bar {
+    height: 5px;
+    display: block;
+    width: 0%;
+}
+
+.progressbar span.bar.completed {
+    background-color: green;
+}
+
+.progressbar span.bar.halfway {
+    background-color: orange;
+}
+
+.progressbar span.bar.start {
+    background-color: red;
+}
+
+/*
+    Controls for show and movie pages
+*/
+.controls {
+    width: 300px;
+    float: right;
+}
+
+/*
+    Table on show and movie pages
+*/
+table.seasons {
+    width: 100%;
+}
+
+table.seasons tbody {
+    color: black;
+}
+
+table.seasons th.col-checkbox,
+table.seasons td.col-checkbox {
+    width: 10px;
+    text-align: center;
+}
+
+table.seasons th.col-ep,
+table.seasons td.col-ep,
+table.seasons th.col-search,
+table.seasons td.col-search {
+    width: 30px;
+    text-align: center;
+}
+
+table.seasons th.col-name,
+table.seasons td.col-name {
+    min-width: 150px;
+}
+
+table.seasons th.col-airdate,
+table.seasons td.col-airdate,
+table.seasons th.col-status,
+table.seasons td.col-status {
+    width: 90px;
+}
+
+/*
+    Table row colours for completed, etc. episodes
+*/
+tr.complete {
+    background-color: #629E62;
+}
+
+tr.pending {
+    background-color: orange;
+}
+
+tr.notAired {
+    background-color: orange;
+}
+
+/*
+    Top of show and movie page table
+*/
+table.info {
+    width: 100%;
+    table-layout: fixed;
+}
+
+table.info td {
+    width: 50%;
+}
+
+/*
+    Show and movie page
+*/
+#topbar {
+    padding: 0;
+    margin-bottom: 15px;
+    display: inline-block;
+}
+
+#topbar #side {
+    width: 200px;
+    float: left;
+}
+
+#topbar #side img {
+    border-radius: 5px;
+}
+
+#topbar #info {
+    float: left;
+    width: 980px;
+    padding: 10px;
+}
+
+#topbar #info .top {
+    margin-bottom: 10px;
+}
+
+#topbar #info .top .main {
+    margin-bottom: 5px;
+}
+
+#topbar #info .top .tags span.tag a {
+    padding: 5px 10px;
+    background-color: #494949;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+table.info {
+    width: 500px;
+}

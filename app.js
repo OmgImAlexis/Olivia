@@ -44,13 +44,14 @@ app.use(passport.session());
 
 app.use(function(req, res, next){
     res.locals.user = req.user;
+    res.locals.title = config.title;
     next();
 });
 
-// require('./config/passport.js')(app, passport);
-
-// app.use('/', require('./routes/auth'));
 app.use('/', require('./routes/web'));
+app.use('/shows', require('./routes/shows'));
+app.use('/movies', require('./routes/movies'));
+app.use('/api', require('./routes/api'));
 
 app.use(function(req, res, next){
     res.status(404).send('Either we lost this page or you clicked an incorrect link!');

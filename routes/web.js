@@ -4,50 +4,37 @@ var express  = require('express'),
     passport = require('passport'),
     async = require('async'),
     _ = require('underscore'),
-    User  = require('../models/User');
-
-var shows = [];
+    config = require('../config/config.js'),
+    Show  = require('../models/Show'),
+    User  = require('../models/User'),
+    Quality  = require('../models/Quality'),
+    Network  = require('../models/Network');
 
 module.exports = (function() {
     var app = express.Router();
 
     app.get('/', function(req, res){
-        res.render(shows);
+        Show.find({}).populate('quality network').exec(function(err, shows){
+            res.render('index', {
+                shows: shows
+            });
+        });
     });
 
-    app.get('/process', function(req, res){
-        var fs = require('fs');
-        var path = require('path');
-        var walk = function(dir, done) {
-            fs.readdir(dir, function(err, list) {
-                if (err) return done(err);
-                var pending = list.length;
-                if (!pending) return done(null, shows);
-                list.forEach(function(file) {
-                    file = path.resolve(dir, file);
-                    fs.stat(file, function(err, stat) {
-                        if (stat && stat.isDirectory()) {
-                            walk(file, function(err, res) {
-                                shows = shows.concat(res);
-                                if (!--pending) done(null, shows);
-                            });
-                        } else {
-                            var probe = require('node-ffprobe');
+    app.get('/poster/:mediaType/:mediaId', function(req, res){
+        if(req.params.mediaType == 'movie' || req.params.mediaType == 'show'){
+            res.sendFile(config.posterLocation  + '/' + req.params.mediaType +'/' + req.params.mediaId);
+        } else {
+            res.send('??');
+        }
+    });
 
-                            probe(file, function(err, probeData) {
-                                shows.push(probeData);
-                            });
+    app.get('/logs', function(req, res){
+        res.send(404);
+    });
 
-                            if (!--pending) done(null, shows);
-                        }
-                    });
-                });
-            });
-        };
-        walk('/Volumes/TV\ Shows/', function(err, shows) {
-            if (err) throw err;
-        });
-        res.send(200);
+    app.get('/settings/general', function(req, res){
+        res.send(404);
     });
 
     return app;
