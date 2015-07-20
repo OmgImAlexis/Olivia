@@ -6,6 +6,7 @@ var episodeSchema = mongoose.Schema({
         ref: 'Show'
     },
     episodeNumber: Number,
+    seasonNumber: Number,
     title: String,
     airDate: Date,
     downloadStatus: String

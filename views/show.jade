@@ -66,15 +66,17 @@ block content
                 td.col-status Status
                 td.col-search Search
         tbody
+            - show.seasons.reverse();
             - for season in show.seasons
+                - season.episodes.reverse();
                 - for episode in season.episodes
-                    tr(class=(new Date(episode.airDate).getTime() > new Date().getTime()) ? 'unAired' : (episode.downloadStatus == 'downloaded' ? 'complete' : 'pending'))
+                    tr(class=(new Date(episode.airDate).getTime() > new Date().getTime() || new Date(episode.airDate).getTime() == 0) ? 'unAired' : (episode.downloadStatus == 'downloaded' ? 'complete' : 'pending'))
                         td.col-checkbox
                             input(type="checkbox")
                         td.col-ep #{episode.episodeNumber}
                         td.col-name #{episode.title}
                         td.col-airdate
-                            time(datetime=episode.airDate) #{episode.airDate}
+                            time(datetime=((new Date(episode.airDate).getTime() == 0) ? 'Unknown' : episode.airDate)) #{(new Date(episode.airDate).getTime() == 0) ? 'Unknown' : episode.airDate}
                         td.col-status #{episode.downloadStatus}
                         td.col-search
                             a(href="/manual/search/show/episode/" + episode.id) Ø

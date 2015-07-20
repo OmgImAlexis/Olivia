@@ -62,7 +62,7 @@ module.exports = (function() {
                 tvdb.getSeriesAllById(req.body.seriesid, function(err, response) {
                     if(err) res.send(err);
                     async.eachSeries(response.Episodes, function i(thetvdbEpisode, callback) {
-                        Episode.findOne({showId: show.id, episodeNumber: thetvdbEpisode.Combined_episodenumber}, function(err, episode){
+                        Episode.findOne({showId: show.id, episodeNumber: thetvdbEpisode.Combined_episodenumber, seasonNumber: thetvdbEpisode.Combined_season}, function(err, episode){
                             if(err) callback(err);
                             if(!episode){
                                 episode = new Episode({
@@ -86,6 +86,7 @@ module.exports = (function() {
                                     season.episodes.push(episode);
                                     season.save(function(err, season){
                                         show.save(function(err, show){
+                                            console.log('Season: ' + thetvdbEpisode.Combined_season + ' Episode: ' + thetvdbEpisode.Combined_episodenumber);
                                             callback();
                                         });
                                     });
