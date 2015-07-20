@@ -1,0 +1,41 @@
+extends ../layouts/main
+
+block content
+    .small-container.styled
+        form(action="", method="post")
+            input(type="hidden", name="provider", value="thetvdb")
+            .form-group
+                input(type="text", name="showName", placeholder="Show name?")
+                input(type="submit", value="Search").button
+        .shows
+        center
+            button.button.big-button(name="addShow") Add show
+
+block scripts
+    script.
+        window.shows = {};
+        $('form input[type="submit"]').click(function() {
+            $.post('/getShowInfo', $("form").serialize(), function(data) {
+                if(data.error) {
+                    console.log(data.error);
+                } else {
+                    for(var i = 0; i < Object.keys(data).length; i++){
+                        shows[data[i].seriesid] = data[i];
+                        $('.shows').append('<input type="radio" name="showId" value="' + data[i].seriesid + '"> ' + data[i].SeriesName + '<br>');
+                    }
+                }
+            });
+            return false;
+        });
+        $('button').click(function(){
+            if($('input[type="radio"]').is(':checked')) {
+                var show = shows[$('input[type="radio"]:checked').attr('value')];
+                for (var key in show) {
+                    if (show.hasOwnProperty(key)) {
+                        var input = $("<input>").attr("type", "hidden").attr("name", key).attr('value', show[key]);
+                        $('form').append($(input));
+                    }
+                }
+                $('form').submit();
+            }
+        });

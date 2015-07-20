@@ -10,17 +10,5 @@ var express  = require('express'),
 module.exports = (function() {
     var app = express.Router();
 
-    app.get('/new', function(req, res){
-        res.send(404);
-    });
-
-    app.get('/comingSoon', function(req, res){
-        res.send(404);
-    });
-
-    app.get('/history', function(req, res){
-        res.send(404);
-    });
-
     return app;
 })();

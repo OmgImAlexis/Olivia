@@ -5,8 +5,8 @@ block content
         - for show in shows
             -var progress = ((show.downloads.done + show.downloads.pending) / show.downloads.total * 100) || 100;
             .holder.styled
-                a(href="/shows/" + show.id)
-                    img(src="/poster/shows/" + show.id)
+                a(href="/show/" + show.id)
+                    img(src="/poster/show/" + show.id)
                 .progressbar
                     span.bar(style="width:" + progress + "%", class=(progress == 100 ? 'completed' : progress >= 50 ? 'halfway' : 'start'))
                 .info

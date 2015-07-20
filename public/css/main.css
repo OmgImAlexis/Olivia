@@ -1,3 +1,16 @@
+/*
+    FIXES FOR STUFFS AND THINGS!
+*/
+html { box-sizing: border-box; }
+*, *:before, *:after { box-sizing: inherit; }
+input, textarea, select, a { outline: none; }
+button:active, .button:active, button:focus, .button:focus, button:hover, .button:hover{
+    outline:none !important;
+}
+
+/*
+    Normal base CSS
+*/
 body {
     margin: 0;
     padding: 0;
@@ -11,6 +24,12 @@ body {
     margin: 0 auto;
     padding: 10px;
     clear: both;
+}
+
+.small-container {
+    width: 500px;
+    margin: 0 auto;
+    padding: 10px 20px;
 }
 
 @media screen and (max-width: 2000px) {
@@ -77,6 +96,11 @@ img {
 
 .button:disabled {
     color: rgb(84, 84, 84);
+}
+
+.big-button {
+    padding: 5px 10px;
+    height: 30px;
 }
 
 #header{
@@ -268,4 +292,31 @@ table.info td {
 
 table.info {
     width: 500px;
+}
+
+/*
+    Basic forms
+*/
+form input {
+    margin-right: 10px;
+}
+
+.form-group input {
+    text-align: left;
+}
+
+.form-group input[type="text"], .form-group input[type="password"] {
+    border: none;
+    padding: 2px 5px;
+    width: 160px;
+    margin: 2px;
+    border: 1px solid rgb(34, 34, 34);
+    background-color: rgb(41, 41, 41);
+    color: white;
+}
+
+.form-group label {
+    display: inline-block;
+    width: 60px;
+    text-align: right;
 }

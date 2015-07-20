@@ -29,6 +29,29 @@ module.exports = (function() {
         }
     });
 
+    app.all('/getShowInfo', function(req, res){
+        var showName = req.body.showName || req.query.showName;
+        var provider = req.body.provider || req.query.provider;
+        if(provider == 'thetvdb') {
+            var TVDB = require("node-tvdb");
+            var tvdb = new TVDB(config.apiKeys.thetvdb);
+            if(showName.trim() == ''){
+                res.send({
+                    error: 'No show entered?'
+                });
+            } else {
+                tvdb.getSeriesByName(showName.trim(), function(err, response) {
+                    if(err) res.send(err);
+                    res.send(response);
+                });
+            }
+        } else {
+            res.send({
+                error: 'That provider doesn\'t exist on this branch, maybe try switching to the dev branch?'
+            });
+        }
+    });
+
     app.get('/logs', function(req, res){
         res.send(404);
     });

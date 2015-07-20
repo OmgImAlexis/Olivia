@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 
 var showSchema = mongoose.Schema({
     title: String,
+    overview: String,
     status: {
         type: String,
         default: 'Downloading'
@@ -35,7 +36,12 @@ var showSchema = mongoose.Schema({
     tags: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Tag'
-    }]
+    }],
+    providers: {
+        thetvdbId: String,
+        imdbId: String,
+        zap2itId: String
+    }
 });
 
 module.exports = mongoose.model('Show', showSchema);

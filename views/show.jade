@@ -1,4 +1,4 @@
-extends ../layouts/main
+extends ./layouts/main
 
 block beforeContent
     .controls
@@ -19,21 +19,17 @@ block content
                 .main
                     span.stars #{show.stars}
                     span.country #{show.country}
-                    | 
-                    | - 
-                    | 
+                    =' - '
                     span.year (#{show.year})
                     span.time #{show.episodeLength}
-                    | 
-                    | - 
-                    | 
+                    =' - '
                     span.imdb #{show.imdb}
                     span.thetvdb #{show.thetvdb}
                 .tags
                     - for tag in show.tags
                         span.tag
                             - if(tag.url)
-                                a(href=tag.url) #{tag.name}
+                                a(href='http://dereferer.org/?' + tag.url) #{tag.name}
                             - else
                                 #{tag.name}
             .container.styled

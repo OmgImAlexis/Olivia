@@ -49,6 +49,7 @@ app.use(function(req, res, next){
 });
 
 app.use('/', require('./routes/web'));
+app.use('/show', require('./routes/show'));
 app.use('/shows', require('./routes/shows'));
 app.use('/movies', require('./routes/movies'));
 app.use('/api', require('./routes/api'));
