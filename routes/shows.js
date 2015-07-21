@@ -43,7 +43,7 @@ module.exports = (function() {
                         if(!show) {
                             var show = new Show({
                                 providers: {
-                                    thetvdbId: req.body.seriesId,
+                                    thetvdbId: req.body.seriesid,
                                     imdbId: req.body.IMDB_ID,
                                     zap2itId: req.body.zap2it_id
                                 },

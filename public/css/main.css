@@ -123,7 +123,7 @@ nav.nav li a{
     padding: 15px 10px;
 }
 
-nav.nav li a:hover {
+nav.nav li a:hover, nav.nav li a.currentPage {
     text-decoration: none;
     color: white;
     background-color: grey;
@@ -135,6 +135,8 @@ nav.nav li a:hover {
 .holder {
     width: 200px;
     border-radius: 5px;
+    float: left;
+    margin: 0 20px 20px 0;
 }
 
 .holder img {
@@ -183,7 +185,6 @@ nav.nav li a:hover {
     Controls for show and movie pages
 */
 .controls {
-    width: 300px;
     float: right;
 }
 

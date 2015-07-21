@@ -3,8 +3,13 @@ var express  = require('express'),
     mongoose = require('mongoose'),
     passport = require('passport'),
     async = require('async'),
+    fs = require('fs'),
+    http = require('http'),
+    path = require('path'),
     _ = require('underscore'),
     config = require('../config/config.js'),
+    TVDB = require('node-tvdb'),
+    tvdb = new TVDB(config.apiKeys.thetvdb),
     Show  = require('../models/Show'),
     User  = require('../models/User'),
     Quality  = require('../models/Quality'),
@@ -23,41 +28,33 @@ module.exports = (function() {
 
     app.get('/poster/:mediaType/:mediaId', function(req, res){
         if(req.params.mediaType == 'movie' || req.params.mediaType == 'show'){
-            res.sendFile(config.posterLocation  + '/' + req.params.mediaType +'/' + req.params.mediaId);
+            var filePath = config.posterLocation  + '/' + req.params.mediaType +'/' + req.params.mediaId;
+            fs.stat(filePath, function(err, stat) {
+                if(err == null){
+                    res.sendFile(filePath);
+                } else {
+                    Show.findOne({_id: req.params.mediaId}, function(err, show){
+                        if(err) res.send({error: err});
+                        if(show.providers.thetvdbId){
+                            tvdb.getBanners(show.providers.thetvdbId, function(error, response) {
+                                var posters = _.where(response, {BannerType: 'poster'});
+                                var file = fs.createWriteStream(config.posterLocation  + '/' + req.params.mediaType +'/' + req.params.mediaId);
+                                var request = http.get('http://www.thetvdb.com/banners/' + posters[0].BannerPath, function(response) {
+                                    response.pipe(file);
+                                    file.on('finish', function() {
+                                        res.sendFile(filePath);
+                                    });
+                                });
+                            });
+                        } else {
+                            res.send({});
+                        }
+                    });
+                }
+            });
         } else {
             res.send('??');
         }
-    });
-
-    app.all('/getShowInfo', function(req, res){
-        var showName = req.body.showName || req.query.showName;
-        var provider = req.body.provider || req.query.provider;
-        if(provider == 'thetvdb') {
-            var TVDB = require("node-tvdb");
-            var tvdb = new TVDB(config.apiKeys.thetvdb);
-            if(showName.trim() == ''){
-                res.send({
-                    error: 'No show entered?'
-                });
-            } else {
-                tvdb.getSeriesByName(showName.trim(), function(err, response) {
-                    if(err) res.send(err);
-                    res.send(response);
-                });
-            }
-        } else {
-            res.send({
-                error: 'That provider doesn\'t exist on this branch, maybe try switching to the dev branch?'
-            });
-        }
-    });
-
-    app.get('/logs', function(req, res){
-        res.send(404);
-    });
-
-    app.get('/settings/general', function(req, res){
-        res.send(404);
     });
 
     return app;

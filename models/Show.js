@@ -7,6 +7,10 @@ var showSchema = mongoose.Schema({
         type: String,
         default: 'Downloading'
     },
+    specialsHidden: {
+        type: Boolean,
+        default: false
+    },
     downloads: {
         done: {
             type: Number,

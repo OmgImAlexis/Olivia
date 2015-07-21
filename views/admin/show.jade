@@ -2,6 +2,8 @@ extends ./layouts/main
 
 block beforeContent
     .controls
+        input(type="button", value=(show.specialsHidden ? 'Show specials' : 'Hide specials'), id="hideSpecialsButton").button
+        | 
         input(type="button", value="Edit", id="editButton").button
         | 
         input(type="button", value="Pause", id="pauseButton").button
@@ -55,28 +57,30 @@ block content
                             td Size:
                             td
                                 span #{show.size}
-    table.pure-table.seasons
-        thead
-            tr
-                td.col-checkbox
-                    input(type="checkbox")
-                td.col-ep Episode
-                td.col-name Name
-                td.col-airdate AirDate
-                td.col-status Status
-                td.col-search Search
-        tbody
-            - show.seasons.reverse();
-            - for season in show.seasons
-                - season.episodes.reverse();
-                - for episode in season.episodes
-                    tr(class=(new Date(episode.airDate).getTime() > new Date().getTime() || new Date(episode.airDate).getTime() == 0) ? 'unAired' : (episode.downloadStatus == 'downloaded' ? 'complete' : 'pending'))
+    - show.seasons.reverse();
+    - for season in show.seasons
+        - if(season.seasonNumber != 0 || (season.seasonNumber == 0 && !show.specialsHidden))
+            h1 #{season.seasonNumber == 0 ? 'Specials' : 'Season ' + season.seasonNumber}
+            table.pure-table.seasons
+                thead
+                    tr
                         td.col-checkbox
                             input(type="checkbox")
-                        td.col-ep #{episode.episodeNumber}
-                        td.col-name #{episode.title}
-                        td.col-airdate
-                            time(datetime=((new Date(episode.airDate).getTime() == 0) ? 'Unknown' : episode.airDate)) #{(new Date(episode.airDate).getTime() == 0) ? 'Unknown' : episode.airDate}
-                        td.col-status #{episode.downloadStatus}
-                        td.col-search
-                            a(href="/manual/search/show/episode/" + episode.id) Ø
+                        td.col-ep Episode
+                        td.col-name Name
+                        td.col-airdate AirDate
+                        td.col-status Status
+                        td.col-search Search
+                tbody
+                    - season.episodes.reverse();
+                        - for episode in season.episodes
+                            tr(class=(new Date(episode.airDate).getTime() > new Date().getTime() || new Date(episode.airDate).getTime() == 0) ? 'unAired' : (episode.downloadStatus == 'downloaded' ? 'complete' : 'pending'))
+                                td.col-checkbox
+                                    input(type="checkbox")
+                                td.col-ep #{episode.episodeNumber}
+                                td.col-name #{episode.title}
+                                td.col-airdate
+                                    time(datetime=((new Date(episode.airDate).getTime() == 0) ? 'Unknown' : episode.airDate)) #{(new Date(episode.airDate).getTime() == 0) ? 'Unknown' : episode.airDate}
+                                td.col-status #{episode.downloadStatus}
+                                td.col-search
+                                    a(href="/manual/search/show/episode/" + episode.id) Ø

@@ -45,13 +45,15 @@ app.use(passport.session());
 app.use(function(req, res, next){
     res.locals.user = req.user;
     res.locals.title = config.title;
+    res.locals.currentPath = req.originalUrl;
     next();
 });
 
 app.use('/', require('./routes/web'));
-app.use('/show', require('./routes/show'));
-app.use('/shows', require('./routes/shows'));
-app.use('/movies', require('./routes/movies'));
+app.use('/admin', require('./routes/admin'));
+app.use('/admin/show', require('./routes/show'));
+app.use('/admin/shows', require('./routes/shows'));
+app.use('/admin/movies', require('./routes/movies'));
 app.use('/api', require('./routes/api'));
 
 app.use(function(req, res, next){

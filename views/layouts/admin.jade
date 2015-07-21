@@ -10,11 +10,15 @@ html
                     li
                         a(href="/", class=(currentPath == '/' ? 'currentPage' : '')) Home
                     li
+                        a(href="/shows/new", class=(currentPath == '/shows/new' ? 'currentPage' : '')) Add new show
+                    li
                         a(href="/shows/comingSoon", class=(currentPath == '/shows/comingSoon' ? 'currentPage' : '')) Coming episodes
                     li
-                        a(href="/shows/history", class=(currentPath == '/shows/history' ? 'currentPage' : '')) Recently added
+                        a(href="/shows/history", class=(currentPath == '/shows/history' ? 'currentPage' : '')) History
                     li
-                        a(href="/admin") Admin
+                        a(href="/logs", class=(currentPath == '/logs' ? 'currentPage' : '')) Logs
+                    li
+                        a(href="/settings/general", class=(currentPath == '/settings/general' ? 'currentPage' : '')) Config
         block beforeContent
         .container
             block content
