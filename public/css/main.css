@@ -139,6 +139,11 @@ nav.nav li a:hover, nav.nav li a.currentPage {
     margin: 0 20px 20px 0;
 }
 
+.seasons .holder {
+    width: 150px;
+    margin: 0 10px 10px 0;
+}
+
 .holder img {
     max-width: 100%;
 }
@@ -149,6 +154,10 @@ nav.nav li a:hover, nav.nav li a.currentPage {
 
 .holder .info span {
     display: block;
+}
+
+.seasons {
+    overflow: hidden;
 }
 
 /*
@@ -293,6 +302,12 @@ table.info td {
 
 table.info {
     width: 500px;
+}
+
+#overview {
+    float: left;
+    width: 960px;
+    margin: 0 10px;
 }
 
 /*

@@ -19,6 +19,7 @@
     "express-session": "^1.11.3",
     "jade": "^1.11.0",
     "method-override": "^2.3.3",
+    "mkdirp": "^0.5.1",
     "mongoose": "^4.0.5",
     "node-ffprobe": "^1.2.2",
     "node-tvdb": "^1.3.1",
