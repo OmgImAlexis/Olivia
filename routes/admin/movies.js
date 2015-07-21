@@ -4,8 +4,8 @@ var express  = require('express'),
     passport = require('passport'),
     async = require('async'),
     _ = require('underscore'),
-    Movie  = require('../models/Movie'),
-    User  = require('../models/User');
+    Movie  = require('../../models/Movie'),
+    User  = require('../../models/User');
 
 module.exports = (function() {
     var app = express.Router();

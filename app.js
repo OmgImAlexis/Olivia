@@ -49,11 +49,17 @@ app.use(function(req, res, next){
     next();
 });
 
+// User views
 app.use('/', require('./routes/web'));
+app.use('/show', require('./routes/show'));
+
+// Admin views
 app.use('/admin', require('./routes/admin'));
-app.use('/admin/show', require('./routes/show'));
-app.use('/admin/shows', require('./routes/shows'));
-app.use('/admin/movies', require('./routes/movies'));
+app.use('/admin/show', require('./routes/admin/show'));
+app.use('/admin/shows', require('./routes/admin/shows'));
+app.use('/admin/movies', require('./routes/admin/movies'));
+
+// API views
 app.use('/api', require('./routes/api'));
 
 app.use(function(req, res, next){
