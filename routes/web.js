@@ -84,12 +84,22 @@ module.exports = (function() {
                             tvdb.getBanners(show.providers.thetvdbId, function(error, response) {
                                 var posters = _.where(response, {BannerType: 'season', Season: req.params.seasonNumber});
                                 var file = fs.createWriteStream(filePath);
-                                var request = http.get('http://www.thetvdb.com/banners/' + posters[0].BannerPath, function(response) {
-                                    response.pipe(file);
-                                    file.on('finish', function() {
-                                        res.sendFile(filePath);
+                                if(posters.length) {
+                                    var request = http.get('http://www.thetvdb.com/banners/' + posters[0].BannerPath, function(response) {
+                                        response.pipe(file);
+                                        file.on('finish', function() {
+                                            res.sendFile(filePath);
+                                        });
                                     });
-                                });
+                                } else {
+                                    var posters =  _.where(response, {BannerType: 'poster'});
+                                    var request = http.get('http://www.thetvdb.com/banners/' + posters[0].BannerPath, function(response) {
+                                        response.pipe(file);
+                                        file.on('finish', function() {
+                                            res.sendFile(filePath);
+                                        });
+                                    });
+                                }
                             });
                         });
                     } else {
