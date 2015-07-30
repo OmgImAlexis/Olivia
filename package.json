@@ -1,12 +1,12 @@
 {
     "name": "Olivia",
     "version": "1.0.0",
-    "description": "",
+    "description": "If Plex and SickRage had a V8 baby. It's still growing up so be gentle.",
     "main": "app.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "git log --format='%aN <%aE>' | sort -f | uniq > CONTRIBUTORS.md"
     },
-    "author": "",
+    "author": "Alexis Tyler <xo@wvvw.me> (http://wvvw.me/)",
     "license": "WTFPL",
     "dependencies": {
         "async": "^1.2.1",
