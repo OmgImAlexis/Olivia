@@ -1,0 +1,8 @@
+extends ./layouts/main
+
+block content
+    .container.episodes.styled
+        - for episode in season.episodes
+            .holder.styled
+                a(href="/play/show/" + showId + "/" + season.seasonNumber + '/' + episode.episodeNumber)
+                    img(src="/poster/show/" + showId + "/" + season.seasonNumber + "/" + episode.episodeNumber)

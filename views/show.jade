@@ -1,17 +1,5 @@
 extends ./layouts/main
 
-block beforeContent
-    .controls
-        input(type="button", value=(show.specialsHidden ? 'Show specials' : 'Hide specials'), id="hideSpecialsButton").button
-        | 
-        input(type="button", value="Edit", id="editButton").button
-        | 
-        input(type="button", value="Pause", id="pauseButton").button
-        | 
-        input(type="button", value="Delete", id="deleteButton").button
-        | 
-        input(type="button", value="Force update", id="forceUpdateButton").button
-
 block content
     .container#topbar
         #side
@@ -22,5 +10,5 @@ block content
         - for season in show.seasons
             - if(season.seasonNumber != 0 || (season.seasonNumber == 0 && !show.specialsHidden))
                 .holder.styled
-                    a(href="/show/" + show.id + "/season/" + season.seasonNumber)
-                        img(src="/poster/show/" + show.id + "/season/" + season.seasonNumber)
+                    a(href="/show/" + show.id + "/" + season.seasonNumber)
+                        img(src="/poster/show/" + show.id + "/" + season.seasonNumber)

@@ -36,9 +36,12 @@ module.exports = (function() {
         });
     });
 
-    app.get('/:showId/edit', function(req, res){
-        Show.findOne({_id: req.params.showId}).exec(function(err, show){
-            res.send(show);
+    app.get('/:showId/:seasonNumber', function(req, res){
+        Season.findOne({showId: req.params.showId, seasonNumber: req.params.seasonNumber}).populate('episodes').exec(function(err, season){
+            res.render('season', {
+                showId: req.params.showId,
+                season: season
+            });
         });
     });
 

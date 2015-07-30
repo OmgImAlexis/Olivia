@@ -156,7 +156,7 @@ nav.nav li a:hover, nav.nav li a.currentPage {
     display: block;
 }
 
-.seasons {
+.seasons, .episodes {
     overflow: hidden;
 }
 
