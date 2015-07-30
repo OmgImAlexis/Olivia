@@ -8,6 +8,7 @@
     },
     "author": "Alexis Tyler <xo@wvvw.me> (http://wvvw.me/)",
     "license": "WTFPL",
+    "repository": "https://github.com/OmgImAlexis/Olivia.git",
     "dependencies": {
         "async": "^1.2.1",
         "bcrypt": "^0.8.3",
