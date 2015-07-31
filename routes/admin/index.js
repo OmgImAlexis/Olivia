@@ -20,7 +20,7 @@ module.exports = (function() {
 
     app.get('/', function(req, res){
         Show.find({}).populate('quality network').exec(function(err, shows){
-            res.render('index', {
+            res.render('admin/index', {
                 shows: shows
             });
         });
@@ -53,7 +53,7 @@ module.exports = (function() {
         var logPath = path.resolve(__dirname, '../log.txt');
         fs.readFile(logPath, 'utf8', function (err, log) {
             if(err) console.log(err);
-            res.render('log', {
+            res.render('admin/log', {
                 log: log
             });
         });

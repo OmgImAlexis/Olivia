@@ -11,6 +11,12 @@ var showSchema = mongoose.Schema({
         type: String,
         enum: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     },
+    runTime: {
+        type: Number
+    },
+    rating: {
+        type: Number
+    },
     specialsHidden: {
         type: Boolean,
         default: false
@@ -41,9 +47,9 @@ var showSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Season'
     }],
-    tags: [{
+    genres: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Tag'
+        ref: 'Genre'
     }],
     actors: [{
         type: mongoose.Schema.Types.ObjectId,

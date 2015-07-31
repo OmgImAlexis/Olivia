@@ -16,7 +16,8 @@ body {
     padding: 0;
     background-color: #292929;
     color: #dfdfdf;
-    font: 11px Arial, sans-serif;
+    font-size: 11px;
+    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     line-height: 1.43;
 }
 
@@ -68,6 +69,10 @@ a:hover {
 
 img {
     max-width: 100%;
+}
+
+h1.title {
+    margin-bottom: 0;
 }
 
 .styled {
@@ -202,6 +207,7 @@ nav.nav li a:hover, nav.nav li a.currentPage {
 */
 table.seasons {
     width: 100%;
+    font-size: 14px;
 }
 
 table.seasons tbody {
@@ -231,7 +237,7 @@ table.seasons th.col-airdate,
 table.seasons td.col-airdate,
 table.seasons th.col-status,
 table.seasons td.col-status {
-    width: 90px;
+    width: 180px;
 }
 
 /*
@@ -247,6 +253,10 @@ tr.pending {
 
 tr.notAired {
     background-color: orange;
+}
+
+tr.unAired {
+    background-color: #ADADAD;
 }
 
 /*
@@ -293,11 +303,9 @@ table.info td {
     margin-bottom: 5px;
 }
 
-#topbar #info .top .tags span.tag a {
-    padding: 5px 10px;
-    background-color: #494949;
-    display: inline-block;
-    margin-right: 5px;
+.genre {
+    padding: 5px;
+    margin-right: 2px;
 }
 
 table.info {

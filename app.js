@@ -54,6 +54,7 @@ app.use(function(req, res, next){
 // User views
 app.use('/', require('./routes/web'));
 app.use('/show', require('./routes/show'));
+app.use('/shows', require('./routes/shows'));
 
 // Admin views
 app.use('/admin', require('./routes/admin'));

@@ -1,0 +1,8 @@
+extends ../layouts/main
+
+block content
+    for day, dayName in days
+        .container.styled.day
+            h1 #{dayName}
+            for episode in day
+                h3 #{episode.showId.title}

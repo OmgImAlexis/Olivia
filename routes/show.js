@@ -7,14 +7,14 @@ var express  = require('express'),
     Show  = require('../models/Show'),
     Season  = require('../models/Season'),
     Episode  = require('../models/Episode'),
-    Tag  = require('../models/Tag'),
+    Genre  = require('../models/Genre'),
     User  = require('../models/User');
 
 module.exports = (function() {
     var app = express.Router();
 
     app.get('/:showId', function(req, res){
-        Show.findOne({_id: req.params.showId}).populate('seasons tags').exec(function(err, show){
+        Show.findOne({_id: req.params.showId}).populate('seasons genres').exec(function(err, show){
             if(err) res.send(err);
             if(!show){
                 res.send({

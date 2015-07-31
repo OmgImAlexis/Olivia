@@ -8,17 +8,17 @@ html
             nav.nav
                 ul
                     li
-                        a(href="/", class=(currentPath == '/' ? 'currentPage' : '')) Home
+                        a(href="/admin", class=(currentPath == '/admin' ? 'currentPage' : '')) Admin
                     li
-                        a(href="/shows/new", class=(currentPath == '/shows/new' ? 'currentPage' : '')) Add new show
+                        a(href="/admin/shows/new", class=(currentPath == '/admin/shows/new' ? 'currentPage' : '')) Add new show
                     li
                         a(href="/shows/comingSoon", class=(currentPath == '/shows/comingSoon' ? 'currentPage' : '')) Coming episodes
                     li
                         a(href="/shows/history", class=(currentPath == '/shows/history' ? 'currentPage' : '')) History
                     li
-                        a(href="/logs", class=(currentPath == '/logs' ? 'currentPage' : '')) Logs
+                        a(href="/admin/logs", class=(currentPath == '/admin/logs' ? 'currentPage' : '')) Logs
                     li
-                        a(href="/settings/general", class=(currentPath == '/settings/general' ? 'currentPage' : '')) Config
+                        a(href="/admin/settings/general", class=(currentPath == '/admin/settings/general' ? 'currentPage' : '')) Config
         block beforeContent
         .container
             block content
