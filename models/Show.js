@@ -7,6 +7,10 @@ var showSchema = mongoose.Schema({
         type: String,
         default: 'Downloading'
     },
+    dayOfWeek: {
+        type: String,
+        enum: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    },
     specialsHidden: {
         type: Boolean,
         default: false
@@ -40,6 +44,10 @@ var showSchema = mongoose.Schema({
     tags: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Tag'
+    }],
+    actors: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Actor'
     }],
     providers: {
         thetvdbId: String,

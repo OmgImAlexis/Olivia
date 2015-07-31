@@ -1,4 +1,4 @@
-extends ../layouts/main
+extends ../../layouts/main
 
 block content
     .small-container.styled
@@ -15,7 +15,7 @@ block scripts
     script.
         window.shows = {};
         $('form input[type="submit"]').click(function() {
-            $.post('/getShowInfo', $("form").serialize(), function(data) {
+            $.post('/admin/getShowInfo', $("form").serialize(), function(data) {
                 if(data.error) {
                     console.log(data.error);
                 } else {

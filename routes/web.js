@@ -11,8 +11,7 @@ var express  = require('express'),
     fs = require('fs'),
     util = require('util'),
     config = require('../config/config.js'),
-    TVDB = require('node-tvdb'),
-    tvdb = new TVDB(config.apiKeys.thetvdb),
+    thetvdb = require('node-tvdb'),
     Show  = require('../models/Show'),
     User  = require('../models/User'),
     Quality  = require('../models/Quality'),
@@ -43,11 +42,6 @@ module.exports = (function() {
         });
     });
 
-    app.get('/poster/*', function(req, res, next){
-        res.setHeader('Cache-Control', 'public, max-age=30672000');
-        next();
-    });
-
     app.get('/poster/show/:showId', function(req, res){
         var filePath = config.posterLocation  + '/show/' + req.params.showId + '/show';
         fs.stat(filePath, function(err, stat) {
@@ -58,12 +52,15 @@ module.exports = (function() {
                     if(err) res.send({error: err});
                     if(show.providers.thetvdbId){
                         ensureExists(config.posterLocation  + '/show/' + req.params.showId + '/', 0744, function(err) {
+                            tvdb = new thetvdb(config.apiKeys.thetvdb);
                             tvdb.getBanners(show.providers.thetvdbId, function(error, response) {
+                                if(error) res.send(error);
                                 var posters = _.where(response, {BannerType: 'poster'});
                                 var file = fs.createWriteStream(filePath);
                                 var request = http.get('http://www.thetvdb.com/banners/' + posters[0].BannerPath, function(response) {
                                     response.pipe(file);
                                     file.on('finish', function() {
+                                        res.setHeader('Cache-Control', 'public, max-age=30672000');
                                         res.sendFile(filePath);
                                     });
                                 });
@@ -89,6 +86,7 @@ module.exports = (function() {
                     if(err) res.send({error: err});
                     if(show.providers.thetvdbId){
                         ensureExists(config.posterLocation  + '/show/' + req.params.showId + '/' + req.params.seasonNumber + '/', 0744, function(err) {
+                            tvdb = new thetvdb(config.apiKeys.thetvdb);
                             tvdb.getBanners(show.providers.thetvdbId, function(error, response) {
                                 var posters = _.where(response, {BannerType: 'season', Season: req.params.seasonNumber});
                                 var file = fs.createWriteStream(filePath);
@@ -104,6 +102,7 @@ module.exports = (function() {
                                     var request = http.get('http://www.thetvdb.com/banners/' + posters[0].BannerPath, function(response) {
                                         response.pipe(file);
                                         file.on('finish', function() {
+                                            res.setHeader('Cache-Control', 'public, max-age=30672000');
                                             res.sendFile(filePath);
                                         });
                                     });
@@ -130,6 +129,7 @@ module.exports = (function() {
                     if(err) res.send({error: err});
                     if(show.providers.thetvdbId){
                         ensureExists(config.posterLocation  + '/show/' + req.params.showId + '/season/' + req.params.seasonNumber + '/', 0744, function(err) {
+                            tvdb = new thetvdb(config.apiKeys.thetvdb);
                             tvdb.getBanners(show.providers.thetvdbId, function(error, response) {
                                 var posters = _.where(response, {BannerType: 'season', Season: req.params.seasonNumber});
                                 var file = fs.createWriteStream(filePath);

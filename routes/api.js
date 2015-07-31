@@ -5,19 +5,39 @@ var express  = require('express'),
     async = require('async'),
     _ = require('underscore'),
     Show  = require('../models/Show'),
+    Movie  = require('../models/Movie'),
     User  = require('../models/User');
 
 module.exports = (function() {
     var app = express.Router();
 
     app.get('/', function(req, res){
-        res.send('Welcome to the tv api.');
+        res.send('Welcome Olivia\'s api.');
     });
 
     app.get('/shows', function(req, res){
-        Show.find({disabled: false}).exec(function(err, shows){
+        Show.find({}).populate('seasons actors').exec(function(err, shows){
+            async.each(shows, function (show, callback) {
+                async.each(show.seasons, function (season, callback) {
+                    season.populate({path: 'episodes'}, function(err, result){
+                        if(err) console.log(err);
+                        callback();
+                    });
+                }, function(){
+                    callback();
+                });
+            }, function (err) {
+                res.send({
+                    shows: shows
+                });
+            });
+        });
+    });
+
+    app.get('/movies', function(req, res){
+        Movie.find({}).exec(function(err, movies){
             res.send({
-                shows: shows
+                movies: movies
             });
         });
     });
