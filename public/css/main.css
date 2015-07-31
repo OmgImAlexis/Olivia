@@ -137,11 +137,16 @@ nav.nav li a:hover, nav.nav li a.currentPage {
 /*
     Show and movie holders on the main page
 */
+.shows {
+    text-align: center;
+}
+
 .holder {
     width: 200px;
     border-radius: 5px;
-    float: left;
+    display: inline-block;
     margin: 0 20px 20px 0;
+    text-align: left;
 }
 
 .seasons .holder {

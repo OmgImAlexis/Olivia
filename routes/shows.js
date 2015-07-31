@@ -15,23 +15,5 @@ var express  = require('express'),
 module.exports = (function() {
     var app = express.Router();
 
-    app.get('/comingSoon', function(req, res){
-        Episode.find({
-            airDate: {
-                $gte: new Date(),
-                $lt: (new Date()).setTime((new Date()).getTime() + 7 * 86400000)
-            }
-        }).populate('showId').sort('airDate').exec(function(err, episodes){
-            var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-            var groupedByDay = _.groupBy(episodes, function(episode) {
-                return days[(new Date(episode.airDate)).getDay()];
-            });
-            res.render('shows/comingSoon', {
-            // res.send({
-                days: groupedByDay
-            });
-        });
-    });
-
     return app;
 })();

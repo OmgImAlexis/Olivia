@@ -15,7 +15,9 @@ var express  = require('express'),
     Show  = require('../models/Show'),
     User  = require('../models/User'),
     Quality  = require('../models/Quality'),
-    Network  = require('../models/Network');
+    Episode  = require('../models/Episode'),
+    Network  = require('../models/Network'),
+    ProcessedFile  = require('../models/ProcessedFile');
 
 // Makes sure the dir exists if not it makes it.
 function ensureExists(path, mask, cb) {
@@ -42,8 +44,34 @@ module.exports = (function() {
         });
     });
 
+    app.get('/history', function(req, res){
+        ProcessedFile.find({}).exec(function(err, processedFiles){
+            res.render('history', {
+                processedFiles: processedFiles
+            });
+        });
+    });
+
+    app.get('/comingSoon', function(req, res){
+        Episode.find({
+            airDate: {
+                $gte: new Date(),
+                $lt: (new Date()).setTime((new Date()).getTime() + 7 * 86400000)
+            }
+        }).populate('showId').sort('airDate').exec(function(err, episodes){
+            var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+            var groupedByDay = _.groupBy(episodes, function(episode) {
+                return days[(new Date(episode.airDate)).getDay()];
+            });
+            res.render('comingSoon', {
+            // res.send({
+                days: groupedByDay
+            });
+        });
+    });
+
     app.get('/poster/show/:showId', function(req, res){
-        var filePath = config.posterLocation  + '/show/' + req.params.showId + '/show';
+        var filePath = config.posterLocation  + '/show/' + req.params.showId + '/show.poster';
         fs.stat(filePath, function(err, stat) {
             if(err == null){
                 res.sendFile(filePath);
@@ -77,7 +105,7 @@ module.exports = (function() {
     });
 
     app.get('/poster/show/:showId/:seasonNumber', function(req, res){
-        var filePath = config.posterLocation  + '/show/' + req.params.showId + '/' + req.params.seasonNumber + '/season';
+        var filePath = config.posterLocation  + '/show/' + req.params.showId + '/' + req.params.seasonNumber + '/season.poster';
         fs.stat(filePath, function(err, stat) {
             if(err == null){
                 res.sendFile(filePath);
@@ -120,7 +148,7 @@ module.exports = (function() {
     });
 
     app.get('/poster/show/:showId/:seasonNumber/:episodeNumber', function(req, res){
-        var filePath = config.posterLocation  + '/show/' + req.params.showId + '/' + req.params.seasonNumber + '/' + req.params.episodeNumber;
+        var filePath = config.posterLocation  + '/show/' + req.params.showId + '/' + req.params.seasonNumber + '/' + req.params.episodeNumber + '.poster';
         fs.stat(filePath, function(err, stat) {
             if(err == null){
                 res.sendFile(filePath);
