@@ -193,7 +193,7 @@ module.exports = (function() {
 
         // // ffmpeg -i video_source_file.ext -vcodec libx264 -vpre ipod640 -b 250k -bt 50k -acodec libfaac -ab 56k -ac 2 -s 480x320 video_out_file.mp4
         //
-        var path = '/Users/xo/Desktop/Paw\ Patrol\ -\ S02E17\ Pups\ and\ the\ Big\ Freeze.mp4';
+        // var path = '/Users/xo/Desktop/Paw\ Patrol\ -\ S02E17\ Pups\ and\ the\ Big\ Freeze.mp4';
         // var stat = fs.statSync(path);
         // var total = stat.size;
         // if (req.headers['range']) {
@@ -217,35 +217,37 @@ module.exports = (function() {
         // }
         // var ffmpeg = require('fluent-ffmpeg');
         // ffmpeg(path).inputOptions('-codec:a aac -strict experimental -b:a 128k -vcodec mpeg4 -b:v 1200k -flags +aic+mv4 -movflags frag_keyframe+empty_moov').pipe(res);
-        var input_file = fs.createReadStream(path);
-        var child_process = require('child_process');
-        input_file.on('error', function(err) {
-            console.log(err);
+        // var input_file = fs.createReadStream(path);
+        // var child_process = require('child_process');
+        // input_file.on('error', function(err) {
+        //     console.log(err);
+        // });
+        //
+        // var output_path = 'output.mp4';
+        // var output_stream = fs.createWriteStream('output.mp4');
+        //
+        // var ffmpeg = child_process.spawn('ffmpeg', ['-i', 'pipe:0', '-f', 'mp4', '-movflags', 'frag_keyframe', 'pipe:1']);
+        // input_file.pipe(ffmpeg.stdin);
+        // ffmpeg.stdout.pipe(res);
+        //
+        // ffmpeg.stderr.on('data', function (data) {
+        //     console.log(data.toString());
+        // });
+        //
+        // ffmpeg.stderr.on('end', function () {
+        //     console.log('file has been converted succesfully');
+        // });
+        //
+        // ffmpeg.stderr.on('exit', function () {
+        //     console.log('child process exited');
+        // });
+        //
+        // ffmpeg.stderr.on('close', function() {
+        //     console.log('...closing time! bye');
+        // });
+        res.send({
+            error: 'Not finished yet!'
         });
-
-        var output_path = 'output.mp4';
-        var output_stream = fs.createWriteStream('output.mp4');
-
-        var ffmpeg = child_process.spawn('ffmpeg', ['-i', 'pipe:0', '-f', 'mp4', '-movflags', 'frag_keyframe', 'pipe:1']);
-        input_file.pipe(ffmpeg.stdin);
-        ffmpeg.stdout.pipe(res);
-
-        ffmpeg.stderr.on('data', function (data) {
-            console.log(data.toString());
-        });
-
-        ffmpeg.stderr.on('end', function () {
-            console.log('file has been converted succesfully');
-        });
-
-        ffmpeg.stderr.on('exit', function () {
-            console.log('child process exited');
-        });
-
-        ffmpeg.stderr.on('close', function() {
-            console.log('...closing time! bye');
-        });
-
     });
 
     return app;
