@@ -7,7 +7,7 @@
     "test": "git log --format='%aN <%aE>' | sort -f | uniq > CONTRIBUTORS.md"
   },
   "author": "Alexis Tyler <xo@wvvw.me> (http://wvvw.me/)",
-  "license": "WTFPL",
+  "license": "GPLv3",
   "repository": "https://github.com/OmgImAlexis/Olivia.git",
   "dependencies": {
     "async": "^1.2.1",
