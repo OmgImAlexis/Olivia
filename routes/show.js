@@ -22,11 +22,26 @@ module.exports = (function() {
                 });
             } else {
                 async.each(show.seasons, function (season, callback) {
-                    season.populate({path: 'episodes'}, function(err, result){
-                        if(err) console.log(err);
+                    if(season.downloads.done > 0){
+                        season.populate({path: 'episodes'}, function(err, result){
+                            if(err) console.log(err);
                             callback();
-                    });
+                        });
+                    } else {
+                        delete show.seasons[show.seasons.indexOf(season)];
+                        callback();
+                    }
                 }, function (err) {
+                    function cleanArray(actual){
+                        var newArray = new Array();
+                        for(var i = 0; i<actual.length; i++){
+                            if (actual[i]){
+                            newArray.push(actual[i]);
+                            }
+                        }
+                        return newArray;
+                    }
+                    show.seasons = cleanArray(show.seasons);
                     res.render('show', {
                         err: err,
                         show: show

@@ -17,7 +17,8 @@ var express  = require('express'),
     Quality  = require('../models/Quality'),
     Episode  = require('../models/Episode'),
     Network  = require('../models/Network'),
-    ProcessedFile  = require('../models/ProcessedFile');
+    Quality  = require('../models/Quality'),
+    Download  = require('../models/Download');
 
 // Makes sure the dir exists if not it makes it.
 function ensureExists(path, mask, cb) {
@@ -37,7 +38,7 @@ module.exports = (function() {
     var app = express.Router();
 
     app.get('/', function(req, res){
-        Show.find({}).populate('quality network').exec(function(err, shows){
+        Show.find({'downloads.done': {$gt: 0}}).populate('quality network').exec(function(err, shows){
             res.render('index', {
                 shows: shows
             });
@@ -45,9 +46,20 @@ module.exports = (function() {
     });
 
     app.get('/history', function(req, res){
-        ProcessedFile.find({}).exec(function(err, processedFiles){
-            res.render('history', {
-                processedFiles: processedFiles
+        Download.find({}).sort('_id').populate('episode movie').exec(function(err, downloads){
+            async.each(downloads, function (download, callback) {
+                if(download.episode){
+                    download.episode.populate({path: 'showId'}, function(err, result){
+                        if(err) console.log(err);
+                        callback();
+                    });
+                } else {
+                    callback();
+                }
+            }, function (err) {
+                res.render('history', {
+                    downloads: downloads
+                });
             });
         });
     });
@@ -186,6 +198,75 @@ module.exports = (function() {
                     }
                 });
             }
+        });
+    });
+
+    app.get('/postProcess', function(req, res){
+        var processed = [];
+        var guessed = [];
+        var downloadPath = '/Users/xo/fakeDownloads/tvshows/';
+        var processedPath = '/Users/xo/fakeShows/';
+        var guessit = require('guessit-wrapper');
+        var fs = require('fs');
+        var mv = require('mv');
+        var files = fs.readdirSync(downloadPath);
+        async.eachSeries(files, function iterator(file, callback) {
+            guessit.parseName(file).then(function (data) {
+                if(data.type == 'episode'){
+                    Show.findOne({ titleLowerCase: (data.year ? data.series + ' (' + data.year + ')' : data.series).toLowerCase() }).exec(function(err, show){
+                        if(err) console.log(err);
+                        if(show){
+                            Episode.findOne({showId: show.id, episodeNumber: data.episodeNumber, seasonNumber: data.season}).exec(function(err, episode){
+                                if(err) console.log(err);
+                                if(episode){
+                                    var download = new Download({
+                                        format: data.format,
+                                        codec: data.videoCodec,
+                                        type: 'episode',
+                                        language: data.language,
+                                        episode: episode.id,
+                                        releaseGroup: data.releaseGroup,
+                                        quality: data.format
+                                    });
+                                    download.save(function(err, download){
+                                        if(err) console.log(err);
+                                        episode.download = download.id;
+                                        episode.save(function(err, episode){
+                                            ensureExists(processedPath + show.title + '/', 0744, function(err) {
+                                                if(err) console.log(err);
+                                                mv(downloadPath + file, processedPath + show.title + '/S' + ('0' + episode.seasonNumber).slice(-2) + 'E' + ('0' + episode.episodeNumber).slice(-2) + ' - ' + episode.title + '.' + data.container, function(err) {
+                                                    if(err) console.log(err);
+                                                    guessed.push(data);
+                                                    processed.push(download);
+                                                    callback();
+                                                });
+                                            });
+                                        });
+                                    });
+                                } else {
+                                    callback();
+                                }
+                            });
+                        } else {
+                            guessed.push(data);
+                            callback();
+                        }
+                    });
+                } else if(data.type == 'movie'){
+                    callback();
+                } else {
+                    callback();
+                }
+            });
+        }, function done() {
+            // res.render('admin/postProcess', {
+            //     files: processed
+            // });
+            res.send({
+                processed: processed,
+                files: files,
+                guessed: guessed
+            })
         });
     });
 

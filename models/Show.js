@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 
 var showSchema = mongoose.Schema({
     title: String,
+    titleLowerCase: String,
     overview: String,
     status: {
         type: String,
@@ -60,6 +61,11 @@ var showSchema = mongoose.Schema({
         imdbId: String,
         zap2itId: String
     }
+});
+
+showSchema.pre('save', function(next){
+    this.titleLowerCase = this.title.toLowerCase();
+    next();
 });
 
 module.exports = mongoose.model('Show', showSchema);

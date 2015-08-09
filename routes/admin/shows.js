@@ -111,6 +111,7 @@ module.exports = (function() {
                                 episode = new Episode({
                                     showId: show.id,
                                     episodeNumber: thetvdbEpisode.Combined_episodenumber,
+                                    seasonNumber: thetvdbEpisode.Combined_season,
                                     title: thetvdbEpisode.EpisodeName,
                                     airDate: new Date(thetvdbEpisode.FirstAired),
                                     downloadStatus: 'Not downloaded?'

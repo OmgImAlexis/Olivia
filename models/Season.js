@@ -9,7 +9,21 @@ var seasonSchema = mongoose.Schema({
     episodes: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Episode'
-    }]
+    }],
+    downloads: {
+        done: {
+            type: Number,
+            default: 0
+        },
+        pending: {
+            type: Number,
+            default: 0
+        },
+        total: {
+            type: Number,
+            default: 0
+        }
+    }
 });
 
 module.exports = mongoose.model('Season', seasonSchema);

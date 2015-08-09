@@ -29,6 +29,7 @@ module.exports = (function() {
     app.all('/getShowInfo', function(req, res){
         var showName = req.body.showName || req.query.showName;
         var provider = req.body.provider || req.query.provider;
+        var all = (req.body.all || req.query.all) ? true : false;
         if(provider == 'thetvdb') {
             var TVDB = require("node-tvdb");
             var tvdb = new TVDB(config.apiKeys.thetvdb);
@@ -39,7 +40,13 @@ module.exports = (function() {
             } else {
                 tvdb.getSeriesByName(showName.trim(), function(err, response) {
                     if(err) res.send(err);
-                    res.send(response);
+                    if(all){
+                        tvdb.getSeriesAllById(response[0].seriesid, function(err, response){
+                            res.send(response);
+                        });
+                    } else {
+                        res.send(response);
+                    }
                 });
             }
         } else {
@@ -60,7 +67,7 @@ module.exports = (function() {
     });
 
     app.get('/settings/general', function(req, res){
-        res.send(404);
+        res.render('admin/settings/index');
     });
 
     return app;

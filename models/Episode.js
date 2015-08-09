@@ -9,7 +9,10 @@ var episodeSchema = mongoose.Schema({
     seasonNumber: Number,
     title: String,
     airDate: Date,
-    downloadStatus: String
+    download: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Download'
+    }
 });
 
 module.exports = mongoose.model('Episode', episodeSchema);

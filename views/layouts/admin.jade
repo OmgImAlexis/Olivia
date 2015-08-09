@@ -8,6 +8,8 @@ html
             nav.nav
                 ul
                     li
+                        a(href="/", class=(currentPath == '/' ? 'currentPage' : '')) Home
+                    li
                         a(href="/admin", class=(currentPath == '/admin' ? 'currentPage' : '')) Admin
                     li
                         a(href="/admin/shows/new", class=(currentPath == '/admin/shows/new' ? 'currentPage' : '')) Add new show

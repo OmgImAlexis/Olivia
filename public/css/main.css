@@ -242,7 +242,13 @@ table.seasons th.col-airdate,
 table.seasons td.col-airdate,
 table.seasons th.col-status,
 table.seasons td.col-status {
-    width: 180px;
+    width: 185px;
+}
+
+.col-status span.quality {
+    padding: 2px 5px;
+    background-color: #30306D;
+    color: white;
 }
 
 /*

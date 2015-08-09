@@ -1,0 +1,6 @@
+extends ../layouts/main
+
+block content
+    for file in files
+        div
+            span #{JSON.stringify(file)}

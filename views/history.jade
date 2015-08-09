@@ -1,5 +1,25 @@
 extends ./layouts/main
 
 block content
-    for file in processedFiles
-        pre #{file}
+    table.pure-table.seasons
+        thead
+            tr
+                td.col-checkbox
+                    input(type="checkbox")
+                td.col-time Time
+                td.col-episodeMovie Episode/Movie
+                td.col-action Action
+                td.col-provider Provider
+                td.col-quality Quality
+        tbody
+            - for download in downloads
+                tr
+                    td.col-checkbox
+                        input(type="checkbox")
+                    td.col-time
+                        time(datetime=(new Date(download._id.getTimestamp()).toISOString())) #{new Date(download._id.getTimestamp())}
+                    td.col-episodeMovie
+                        a(href="/admin/show/" + download.episode.showId._id + "#" + ('0' + download.episode.seasonNumber).slice(-2) + ('0' + download.episode.episodeNumber).slice(-2)) #{download.episode ? download.episode.showId.title + ' - S' + ('0' + download.episode.seasonNumber).slice(-2) + 'E' + ('0' + download.episode.episodeNumber).slice(-2) : download.movie.movieId.title}
+                    td.col-action #{download.action} 
+                    td.col-provider #{download.provider}
+                    td.col-quality #{download.quality}

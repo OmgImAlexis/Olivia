@@ -8,6 +8,7 @@ var express  = require('express'),
     Season  = require('../../models/Season'),
     Episode  = require('../../models/Episode'),
     Genre  = require('../../models/Genre'),
+    Download  = require('../../models/Download'),
     User  = require('../../models/User');
 
 module.exports = (function() {
@@ -24,9 +25,17 @@ module.exports = (function() {
                 async.each(show.seasons, function (season, callback) {
                     season.populate({path: 'episodes'}, function(err, result){
                         if(err) console.log(err);
+                        async.each(season.episodes, function (episode, callback) {
+                            episode.populate({path: 'download'}, function(err, result){
+                                if(err) console.log(err);
+                                callback();
+                            });
+                        }, function(err){
                             callback();
+                        });
                     });
                 }, function (err) {
+                    if(err) console.log(err);
                     res.render('admin/show', {
                         err: err,
                         show: show
