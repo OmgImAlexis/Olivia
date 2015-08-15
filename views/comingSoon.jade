@@ -1,8 +1,18 @@
 extends ./layouts/main
 
+block beforeContent
+    style.
+        .day h1 {
+            margin: 0;
+        }
+
 block content
     for day, dayName in days
-        .container.styled.day
-            h1 #{dayName}
+        .day(id=dayName.toLowerCase())
+            .title.styled
+                - var daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+                h1 #{dayName == daysOfWeek[new Date().getDay()]? dayName + ' (today)' : dayName }
             for episode in day
-                h3 #{episode.showId.title}
+                .show.styled
+                    img(src="/poster/show/" + episode.showId.id + "?type=banner")
+                    .description(style="padding: 5px;") #{episode.showId.overview}

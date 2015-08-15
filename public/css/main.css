@@ -355,3 +355,20 @@ form input {
     width: 60px;
     text-align: right;
 }
+
+.day {
+    margin-bottom: 25px;
+}
+
+.day .title {
+    width: 250px;
+    text-align: center;
+    margin: 0 auto;
+    font-size: 1.2em;
+    margin-bottom: 5px;
+}
+
+.day .show {
+    margin: 0 auto 10px auto;
+    width: 600px;
+}
