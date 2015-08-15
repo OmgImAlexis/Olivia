@@ -3,16 +3,16 @@ extends ../layouts/admin
 block content
     .shows
         - for show in shows
-            -var progress = ((show.downloads.done + show.downloads.pending) / show.downloads.total * 100) || 100;
+            -var progress = (show.downloadCount + show.snatchedCount) / show.episodeCount * 100;
             .holder.styled
-                a(href="/show/" + show.id)
+                a(href="/admin/show/" + show.id)
                     img(src="/poster/show/" + show.id)
                 .progressbar
                     span.bar(style="width:" + progress + "%", class=(progress == 100 ? 'completed' : progress >= 50 ? 'halfway' : 'start'))
                 .info
                     span.title #{show.title}
                     span.status #{show.status}
-                    span.downloads #{show.downloads.done + show.downloads.pending} / #{show.downloads.total}
+                    span.downloads #{show.downloadCount + show.snatchedCount} / #{show.episodeCount}
                     span.quality #{show.quality}
                     span.network #{show.network.title}
             

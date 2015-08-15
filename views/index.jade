@@ -3,7 +3,7 @@ extends ./layouts/main
 block content
     .shows
         - for show in shows
-            -var progress = ((show.downloads.done + show.downloads.pending) / show.downloads.total * 100) || 100;
+            -var progress = (show.downloadCount + show.snatchedCount) / show.episodeCount * 100;
             .holder.styled
                 a(href="/show/" + show.id)
                     img(src="/poster/show/" + show.id)
@@ -12,7 +12,7 @@ block content
                 .info
                     span.title #{show.title}
                     span.status #{show.status}
-                    span.downloads #{show.downloads.done + show.downloads.pending} / #{show.downloads.total}
+                    span.downloads #{show.downloadCount + show.snatchedCount} / #{show.episodeCount}
                     span.quality #{show.quality}
                     span.network #{show.network.title}
             

@@ -22,20 +22,10 @@ var showSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
-    downloads: {
-        done: {
-            type: Number,
-            default: 0
-        },
-        pending: {
-            type: Number,
-            default: 0
-        },
-        total: {
-            type: Number,
-            default: 0
-        }
-    },
+    downloads: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Download'
+    }],
     quality: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Quality'

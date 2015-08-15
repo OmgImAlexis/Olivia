@@ -62,6 +62,9 @@ app.use('/admin/show', require('./routes/admin/show'));
 app.use('/admin/shows', require('./routes/admin/shows'));
 app.use('/admin/movies', require('./routes/admin/movies'));
 
+// Backend views
+app.use('/poster', require('./routes/poster'));
+
 // API views
 app.use('/api', require('./routes/api'));
 

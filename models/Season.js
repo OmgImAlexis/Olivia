@@ -10,20 +10,10 @@ var seasonSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Episode'
     }],
-    downloads: {
-        done: {
-            type: Number,
-            default: 0
-        },
-        pending: {
-            type: Number,
-            default: 0
-        },
-        total: {
-            type: Number,
-            default: 0
-        }
-    }
+    downloads: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Download'
+    }]
 });
 
 module.exports = mongoose.model('Season', seasonSchema);

@@ -13,6 +13,8 @@ var express  = require('express'),
     Show  = require('../../models/Show'),
     User  = require('../../models/User'),
     Quality  = require('../../models/Quality'),
+    Episode  = require('../../models/Episode'),
+    Download  = require('../../models/Download'),
     Network  = require('../../models/Network');
 
 module.exports = (function() {
@@ -20,8 +22,21 @@ module.exports = (function() {
 
     app.get('/', function(req, res){
         Show.find({}).populate('quality network').exec(function(err, shows){
-            res.render('admin/index', {
-                shows: shows
+            async.each(shows, function (show, callback) {
+                Download.count({showId: show._id, status: 'done'}).exec(function(err, downloadCount){
+                    show.downloadCount = downloadCount;
+                    Download.count({showId: show._id, status: 'snatched'}).exec(function(err, snatchedCount){
+                        show.snatchedCount = snatchedCount;
+                        Episode.count({showId: show._id}).exec(function(err, episodeCount){
+                            show.episodeCount = episodeCount;
+                            callback();
+                        });
+                    });
+                });
+            }, function(err) {
+                res.render('admin/index', {
+                    shows: shows
+                });
             });
         });
     });
