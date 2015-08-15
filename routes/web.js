@@ -58,7 +58,7 @@ module.exports = (function() {
     var app = express.Router();
 
     app.get('/', function(req, res){
-        Show.find({ $where: "this.downloads.length > 1" }).populate('quality network').exec(function(err, shows){
+        Show.find({}).populate('quality network').exec(function(err, shows){
             async.each(shows, function (show, callback) {
                 Download.count({showId: show._id, status: 'done'}).exec(function(err, downloadCount){
                     show.downloadCount = downloadCount;
@@ -71,6 +71,9 @@ module.exports = (function() {
                     });
                 });
             }, function(err) {
+                shows = shows.filter(function(show){
+                    return show.downloadCount + show.snatchedCount > 0 ? show : '';
+                });
                 res.render('index', {
                     shows: shows
                 });
@@ -117,10 +120,9 @@ module.exports = (function() {
     app.get('/postProcess', function(req, res){
         var unProcessed = [];
         var processed = [];
-        var downloadPath = '/Users/xo/fakeDownloads/tvshows/';
-        var processedPath = '/Users/xo/fakeShows/';
+        var downloadPath = config.downloadPath;
+        var processedPath = config.processedPath;
         var files = walkSync(downloadPath);
-
         async.eachSeries(files, function i(file, callback) {
             var originalFile = file;
             file = file.replace(downloadPath,'');
@@ -153,31 +155,28 @@ module.exports = (function() {
                                             if(err) console.log(err);
                                             if(download){
                                                 console.log('Saved download');
-                                                show.downloads.push(download.id);
-                                                show.save(function(err, show){
-                                                    episode.download = download.id;
-                                                    episode.save(function(err, episode){
-                                                        ensureExists(processedPath + show.title + '/', 0744, function(err) {
-                                                            if(err) console.log(err);
-                                                            if((data.episodeList && data.episodeList.indexOf(dataEpisode) == data.episodeList.length-1 ) || data.episodeNumber){
-                                                                mv(originalFile, processedPath + show.title + '/S' + ('0' + episode.seasonNumber).slice(-2) + 'E' + ('0' + dataEpisode).slice(-2) + ' - ' + episode.title + '.' + data.container, function(err) {
-                                                                    if(err) console.log(err);
-                                                                    processed.push({
-                                                                        file: file,
-                                                                        download: download,
-                                                                        data: data
-                                                                    });
-                                                                    callback();
-                                                                });
-                                                            } else {
+                                                episode.download = download.id;
+                                                episode.save(function(err, episode){
+                                                    ensureExists(processedPath + show.title + '/', 0744, function(err) {
+                                                        if(err) console.log(err);
+                                                        if((data.episodeList && data.episodeList.indexOf(dataEpisode) == data.episodeList.length-1 ) || data.episodeNumber){
+                                                            mv(originalFile, processedPath + show.title + '/S' + ('0' + episode.seasonNumber).slice(-2) + 'E' + ('0' + dataEpisode).slice(-2) + ' - ' + episode.title + '.' + data.container, function(err) {
+                                                                if(err) console.log(err);
                                                                 processed.push({
                                                                     file: file,
                                                                     download: download,
                                                                     data: data
                                                                 });
                                                                 callback();
-                                                            }
-                                                        });
+                                                            });
+                                                        } else {
+                                                            processed.push({
+                                                                file: file,
+                                                                download: download,
+                                                                data: data
+                                                            });
+                                                            callback();
+                                                        }
                                                     });
                                                 });
                                             } else {

@@ -2,17 +2,21 @@ extends ./layouts/main
 
 block content
     .shows
-        - for show in shows
-            -var progress = (show.downloadCount + show.snatchedCount) / show.episodeCount * 100;
-            .holder.styled
-                a(href="/show/" + show.id)
-                    img(src="/poster/show/" + show.id)
-                .progressbar
-                    span.bar(style="width:" + progress + "%", class=(progress == 100 ? 'completed' : progress >= 50 ? 'halfway' : 'start'))
-                .info
-                    span.title #{show.title}
-                    span.status #{show.status}
-                    span.downloads #{show.downloadCount + show.snatchedCount} / #{show.episodeCount}
-                    span.quality #{show.quality}
-                    span.network #{show.network.title}
-            
+        if(shows)
+            - for show in shows
+                -var progress = (show.downloadCount + show.snatchedCount) / show.episodeCount * 100;
+                .holder.styled
+                    a(href="/show/" + show.id)
+                        img(src="/poster/show/" + show.id)
+                    .progressbar
+                        span.bar(style="width:" + progress + "%", class=(progress == 100 ? 'completed' : progress >= 50 ? 'halfway' : 'start'))
+                    .info
+                        span.title #{show.title}
+                        span.status #{show.status}
+                        span.downloads #{show.downloadCount + show.snatchedCount} / #{show.episodeCount}
+                        span.quality #{show.quality}
+                        span.network #{show.network.title}
+        else
+            .styled(style="width: 250px; text-align: center; display: inline-block;")
+                h2
+                    a(href="/admin/") Please add some media
