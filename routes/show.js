@@ -14,7 +14,7 @@ module.exports = (function() {
     var app = express.Router();
 
     app.get('/:showId', function(req, res){
-        Show.findOne({_id: req.params.showId}).populate('seasons genres').exec(function(err, show){
+        Show.findOne({_id: req.params.showId}).populate('seasons genres downloads').exec(function(err, show){
             if(err) res.send(err);
             if(!show){
                 res.send({
@@ -22,26 +22,16 @@ module.exports = (function() {
                 });
             } else {
                 async.each(show.seasons, function (season, callback) {
-                    if(season.downloads.done > 0){
-                        season.populate({path: 'episodes'}, function(err, result){
-                            if(err) console.log(err);
-                            callback();
+                    season.populate({path: 'episodes'}, function(err, result){
+                        season.episodes = season.episodes.filter(function(episode){
+                            return episode.download ? episode : false;
                         });
-                    } else {
-                        delete show.seasons[show.seasons.indexOf(season)];
-                        callback();
-                    }
+                        callback()
+                    });
                 }, function (err) {
-                    function cleanArray(actual){
-                        var newArray = new Array();
-                        for(var i = 0; i<actual.length; i++){
-                            if (actual[i]){
-                            newArray.push(actual[i]);
-                            }
-                        }
-                        return newArray;
-                    }
-                    show.seasons = cleanArray(show.seasons);
+                    show.seasons = show.seasons.filter(function(season){
+                        return season.episodes.length ? season : false;
+                    });
                     res.render('show', {
                         err: err,
                         show: show
@@ -53,6 +43,9 @@ module.exports = (function() {
 
     app.get('/:showId/:seasonNumber', function(req, res){
         Season.findOne({showId: req.params.showId, seasonNumber: req.params.seasonNumber}).populate('episodes').exec(function(err, season){
+            season.episodes = season.episodes.filter(function(episode){
+                return episode.download ? episode : false;
+            });
             res.render('season', {
                 showId: req.params.showId,
                 season: season

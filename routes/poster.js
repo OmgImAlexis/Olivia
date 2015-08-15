@@ -24,7 +24,7 @@ var express  = require('express'),
 function ensureExists(path, mask, cb) {
     if (typeof mask == 'function') { // allow the `mask` parameter to be optional
         cb = mask;
-        mask = 0777;
+        mask = 0755;
     }
     fs.mkdir(path, mask, function(err) {
         if (err) {
@@ -53,15 +53,22 @@ module.exports = (function() {
                             tvdb.getBanners(show.providers.thetvdbId, function(error, response) {
                                 if(error) res.send(error);
                                 var posters = _.where(response, {BannerType: 'poster'});
-                                var file = fs.createWriteStream(filePath);
-                                var request = http.get('http://www.thetvdb.com/banners/' + posters[0].BannerPath, function(response) {
-                                    response.pipe(file);
-                                    file.on('finish', function() {
-                                        res.sendFile(filePath, {
-                                            maxAge: 30672000
+                                if(posters.length){
+                                    var file = fs.createWriteStream(filePath);
+                                    var request = http.get('http://www.thetvdb.com/banners/' + posters[0].BannerPath, function(response) {
+                                        response.pipe(file);
+                                        file.on('finish', function() {
+                                            res.sendFile(filePath, {
+                                                maxAge: 30672000
+                                            });
                                         });
                                     });
-                                });
+                                } else {
+                                    filePath = config.posterLocation  + '/placeholder.png';
+                                    res.sendFile(filePath, {
+                                        maxAge: 30672000
+                                    });
+                                }
                             });
                         });
                     } else {
@@ -98,14 +105,9 @@ module.exports = (function() {
                                         });
                                     });
                                 } else {
-                                    var posters =  _.where(response, {BannerType: 'poster'});
-                                    var request = http.get('http://www.thetvdb.com/banners/' + posters[0].BannerPath, function(response) {
-                                        response.pipe(file);
-                                        file.on('finish', function() {
-                                            res.sendFile(filePath, {
-                                                maxAge: 30672000
-                                            });
-                                        });
+                                    filePath = config.posterLocation  + '/placeholder.png';
+                                    res.sendFile(filePath, {
+                                        maxAge: 30672000
                                     });
                                 }
                             });
@@ -142,12 +144,9 @@ module.exports = (function() {
                                         });
                                     });
                                 } else {
-                                    var posters =  _.where(response, {BannerType: 'poster'});
-                                    var request = http.get('http://www.thetvdb.com/banners/' + posters[0].BannerPath, function(response) {
-                                        response.pipe(file);
-                                        file.on('finish', function() {
-                                            res.sendFile(filePath);
-                                        });
+                                    filePath = config.posterLocation  + '/placeholder.png';
+                                    res.sendFile(filePath, {
+                                        maxAge: 30672000
                                     });
                                 }
                             });

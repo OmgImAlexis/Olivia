@@ -9,10 +9,6 @@ var seasonSchema = mongoose.Schema({
     episodes: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Episode'
-    }],
-    downloads: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Download'
     }]
 });
 

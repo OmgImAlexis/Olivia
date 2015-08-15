@@ -26,7 +26,7 @@ var express  = require('express'),
 function ensureExists(path, mask, cb) {
     if (typeof mask == 'function') { // allow the `mask` parameter to be optional
         cb = mask;
-        mask = 0777;
+        mask = 0755;
     }
     fs.mkdir(path, mask, function(err) {
         if (err) {

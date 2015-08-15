@@ -22,10 +22,6 @@ var showSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
-    downloads: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Download'
-    }],
     quality: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Quality'
