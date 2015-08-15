@@ -45,6 +45,22 @@ module.exports = (function() {
         });
     });
 
+    app.delete('/:showId', function(req, res){
+        Show.findOne({ _id: req.params.showId }).exec(function (err, show) {
+            if(show){
+                show.remove(function (err) {
+                    if(err) res.send(err);
+                    else res.send({message: 'Deleted'});
+                });
+            } else {
+                res.send({
+                    err: err,
+                    message: 'No show found'
+                });
+            }
+        });
+    });
+
     app.get('/:showId/edit', function(req, res){
         Show.findOne({_id: req.params.showId}).exec(function(err, show){
             res.send(show);
