@@ -1,4 +1,6 @@
 var express = require('express'),
+    http = require('http'),
+    https = require('https'),
     cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
     methodOverride = require('method-override'),
@@ -7,6 +9,7 @@ var express = require('express'),
     logger = require('express-logger'),
     mongoose = require('mongoose'),
     fs = require('fs'),
+    compress = require('compression'),
     passport = require('passport'),
     config = require('./config/config.js'),
     User = require('./models/User'),
@@ -26,6 +29,7 @@ app.set('view engine', 'jade');
 app.use(express.static(__dirname + '/public', {
     maxAge: '30672000'
 }));
+app.use(compress());
 app.use(logger({path: './log.txt'}));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({
@@ -76,6 +80,13 @@ fs.writeFile('./log.txt', '', function(){
     console.log('Log file emptied.');
 });
 
-app.listen(config.env.port, function() {
-    console.log('Express server listening on port %s', config.env.port);
-});
+// app.listen(config.env.port, function() {
+//     console.log('Express server listening on port %s', config.env.port);
+// });
+
+
+http.createServer(app).listen(config.env.httpPort, '0.0.0.0');
+https.createServer({
+    key: fs.readFileSync('./ssl/key.pem', 'utf8'),
+    cert: fs.readFileSync('./ssl/server.crt', 'utf8')
+}, app).listen(config.env.httpsPort, '0.0.0.0');

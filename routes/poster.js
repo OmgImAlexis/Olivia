@@ -41,7 +41,9 @@ module.exports = (function() {
         var filePath = config.posterLocation  + '/show/' + req.params.showId + '/show.poster';
         fs.stat(filePath, function(err, stat) {
             if(err == null){
-                res.sendFile(filePath);
+                res.sendFile(filePath, {
+                    maxAge: 30672000
+                });
             } else {
                 Show.findOne({_id: req.params.showId}, function(err, show){
                     if(err) res.send({error: err});
@@ -55,8 +57,9 @@ module.exports = (function() {
                                 var request = http.get('http://www.thetvdb.com/banners/' + posters[0].BannerPath, function(response) {
                                     response.pipe(file);
                                     file.on('finish', function() {
-                                        res.setHeader('Cache-Control', 'public, max-age=30672000');
-                                        res.sendFile(filePath);
+                                        res.sendFile(filePath, {
+                                            maxAge: 30672000
+                                        });
                                     });
                                 });
                             });
@@ -89,7 +92,9 @@ module.exports = (function() {
                                     var request = http.get('http://www.thetvdb.com/banners/' + posters[0].BannerPath, function(response) {
                                         response.pipe(file);
                                         file.on('finish', function() {
-                                            res.sendFile(filePath);
+                                            res.sendFile(filePath, {
+                                                maxAge: 30672000
+                                            });
                                         });
                                     });
                                 } else {
@@ -97,8 +102,9 @@ module.exports = (function() {
                                     var request = http.get('http://www.thetvdb.com/banners/' + posters[0].BannerPath, function(response) {
                                         response.pipe(file);
                                         file.on('finish', function() {
-                                            res.setHeader('Cache-Control', 'public, max-age=30672000');
-                                            res.sendFile(filePath);
+                                            res.sendFile(filePath, {
+                                                maxAge: 30672000
+                                            });
                                         });
                                     });
                                 }
