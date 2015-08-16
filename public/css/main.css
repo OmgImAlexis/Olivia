@@ -210,12 +210,12 @@ nav.nav li a:hover, nav.nav li a.currentPage {
 /*
     Table on show and movie pages
 */
-table.seasons {
+table.seasons, table.shows {
     width: 100%;
     font-size: 14px;
 }
 
-table.seasons tbody {
+table.seasons tbody, table.shows tbody {
     color: black;
 }
 
@@ -245,6 +245,14 @@ table.seasons td.col-status {
     width: 185px;
 }
 
+.col-network {
+    width: 135px;
+}
+
+.col-show {
+    width: 500px;
+}
+
 .col-status span.quality {
     padding: 2px 5px;
     background-color: #30306D;
@@ -258,12 +266,8 @@ tr.complete {
     background-color: #629E62;
 }
 
-tr.pending {
-    background-color: orange;
-}
-
-tr.notAired {
-    background-color: orange;
+tr.wanted {
+    background-color: darkorange;
 }
 
 tr.unAired {
@@ -371,4 +375,59 @@ form input {
 .day .show {
     margin: 0 auto 10px auto;
     width: 600px;
+}
+
+/*
+    Cross and Tick for actity
+*/
+
+.cross {
+    display:inline-block;
+    width: 22px;
+    height:22px;
+    -ms-transform: rotate(45deg); /* IE 9 */
+    -webkit-transform: rotate(45deg); /* Chrome, Safari, Opera */
+    transform: rotate(45deg);
+}
+
+.crossArm {
+    position: absolute;
+    width:5px;
+    height:19px;
+    background-color:red;
+    left:11px;
+    top:6px;
+}
+
+.crossArmTwo {
+    -ms-transform: rotate(90deg); /* IE 9 */
+    -webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
+    transform: rotate(90deg);
+}
+
+.tick {
+    display:inline-block;
+    width: 22px;
+    height:22px;
+    -ms-transform: rotate(45deg); /* IE 9 */
+    -webkit-transform: rotate(45deg); /* Chrome, Safari, Opera */
+    transform: rotate(45deg);
+}
+
+.tickLine {
+    position: absolute;
+    width:5px;
+    height:19px;
+    background-color:lightgreen;
+    left:11px;
+    top:6px;
+}
+
+.tickKick {
+     position: absolute;
+     width:7px;
+     height:5px;
+     background-color:lightgreen;
+     left:5px;
+     top:20px;
 }

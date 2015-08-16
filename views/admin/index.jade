@@ -1,18 +1,77 @@
 extends ../layouts/admin
 
+block beforeContent
+    script.
+        $('input#showSearch').on('keyup', function(e){
+            if(e.keyCode == 8){
+                $('tbody tr').show();
+            } else {
+                $('tbody tr').hide();
+                $('tbody tr').filter(function(row){
+                    var input = $('input#showSearch').val();
+                    if($(this).data('show-title').toLowerCase().indexOf(input) >= 0 || $(this).data('show-network').toLowerCase().indexOf(input) >= 0){
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }).show();    
+            }
+        });
+
 block content
+    span(style="float: right; padding: 5px;")
+        | Search:
+        | &nbsp;
+        input(type="text", placeholder="Show Name")#showSearch
     .shows
-        - for show in shows
-            -var progress = (show.downloadCount + show.snatchedCount) / show.episodeCount * 100;
-            .holder.styled
-                a(href="/admin/show/" + show.id)
-                    img(src="/poster/show/" + show.id)
-                .progressbar
-                    span.bar(style="width:" + progress + "%", class=(progress == 100 ? 'completed' : progress >= 50 ? 'halfway' : 'start'))
-                .info
-                    span.title #{show.title}
-                    span.status #{show.status}
-                    span.downloads #{show.downloadCount + show.snatchedCount} / #{show.episodeCount}
-                    span.quality #{show.quality}
-                    span.network #{show.network.title}
-            
+        table.pure-table.shows
+            thead
+                tr
+                    td.col-checkbox
+                        input(type="checkbox")
+                    td.col-nextEpisode Next Episode
+                    td.col-show Show
+                    td.col-network Network
+                    td.col-quality Quality
+                    td.col-downloads Downloads
+                    td.col-active Active
+                    td.col-status Status
+            tbody
+                - var odd = true;
+                - for show in shows
+                    - odd = (odd ? false : true);
+                    -var progress = (show.downloadCount + show.snatchedCount) / show.episodeCount * 100;
+                    tr(style="background-color: " + (odd ? '#676767' : '#4E4E4E') + ";", data-show-title=show.title, data-show-network=show.network.title)
+                        td.col-checkbox
+                            input(type="checkbox")
+                        - var numbersOfWeek = {sunday: 0, monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6};
+                        //- - var todaysDate = new Date();
+                        //- - var nextEpisodeDate = new Date((new Date()).setDate((new Date()).getDate() + (numbersOfWeek[show.dayOfWeek.toLowerCase()] - 1 - (new Date()).getDay() + 7) % 7 + 1));
+                        //- - var daysTillNextEpisode = nextEpisodeDate.getTime() - todaysDate.getTime()/86400000;
+                        td.col-nextEpisode
+                            //- if(daysTillNextEpisode > 0)
+                            //-     if(daysTillNextEpisode == 1)
+                            //-         | Today
+                            //-     else
+                            //-         if(daysTillNextEpisode == 2)
+                            //-             | Tomorrow
+                            //-         else
+                            //-             | #{show.dayOfWeek}
+                        td.col-show
+                            a(href="/admin/show/" + show.id)
+                                img(src="/poster/show/" + show.id + "?type=banner")
+                        td.col-network #{show.network.title}
+                        td.col-quality #{show.quality}
+                        td.col-downloads
+                            .progressbar
+                                span.bar(style="width:" + progress + "%", class=(progress == 100 ? 'completed' : progress >= 50 ? 'halfway' : 'start'))
+                        td.col-active
+                            if(show.active)
+                                .tick
+                                    .tickLine
+                                    .tickKick
+                            else
+                                .cross
+                                    .crossArm
+                                    .crossArm.crossArmTwo
+                        td.col-status Status
