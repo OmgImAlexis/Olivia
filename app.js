@@ -78,5 +78,5 @@ app.use(function(req, res, next){
 });
 
 http.createServer(app).listen(config.env.httpPort, '0.0.0.0', function(){
-    open("http://localhost:" + config.env.httpPort);
+    // open("http://localhost:" + config.env.httpPort); // Should only be used for production if user has enabled in config
 });

@@ -10,6 +10,7 @@ var express  = require('express'),
     http = require('http'),
     fs = require('fs'),
     util = require('util'),
+    mkdirp = require('mkdirp'),
     config = require('../config/config.js'),
     thetvdb = require('node-tvdb'),
     Show  = require('../models/Show'),
@@ -19,20 +20,6 @@ var express  = require('express'),
     Network  = require('../models/Network'),
     Quality  = require('../models/Quality'),
     Download  = require('../models/Download');
-
-// Makes sure the dir exists if not it makes it.
-function ensureExists(path, mask, cb) {
-    if (typeof mask == 'function') { // allow the `mask` parameter to be optional
-        cb = mask;
-        mask = 0755;
-    }
-    fs.mkdir(path, mask, function(err) {
-        if (err) {
-            if (err.code == 'EEXIST') cb(null); // ignore the error if the folder already exists
-            else cb(err); // something else went wrong
-        } else cb(null); // successfully created folder
-    });
-}
 
 module.exports = (function() {
     var app = express.Router();
@@ -48,7 +35,8 @@ module.exports = (function() {
                 Show.findOne({_id: req.params.showId}, function(err, show){
                     if(err) res.send({error: err});
                     if(show.providers.thetvdbId){
-                        ensureExists(config.posterLocation  + '/show/' + req.params.showId + '/', 0744, function(err) {
+                        mkdirp(config.posterLocation  + '/show/' + req.params.showId + '/', function(err) {
+                            if(err) console.error(err);
                             tvdb = new thetvdb(config.apiKeys.thetvdb);
                             tvdb.getBanners(show.providers.thetvdbId, function(error, response) {
                                 if(error) res.send(error);
@@ -90,7 +78,7 @@ module.exports = (function() {
                 Show.findOne({_id: req.params.showId}, function(err, show){
                     if(err) res.send({error: err});
                     if(show.providers.thetvdbId){
-                        ensureExists(config.posterLocation  + '/show/' + req.params.showId + '/' + req.params.seasonNumber + '/', 0744, function(err) {
+                        mkdirp(config.posterLocation  + '/show/' + req.params.showId + '/' + req.params.seasonNumber + '/', function(err) {
                             tvdb = new thetvdb(config.apiKeys.thetvdb);
                             tvdb.getBanners(show.providers.thetvdbId, function(error, response) {
                                 var posters = _.where(response, {BannerType: 'season', Season: req.params.seasonNumber});
@@ -131,7 +119,7 @@ module.exports = (function() {
                 Show.findOne({_id: req.params.showId}, function(err, show){
                     if(err) res.send({error: err});
                     if(show.providers.thetvdbId){
-                        ensureExists(config.posterLocation  + '/show/' + req.params.showId + '/season/' + req.params.seasonNumber + '/', 0744, function(err) {
+                        mkdirp(config.posterLocation  + '/show/' + req.params.showId + '/season/' + req.params.seasonNumber + '/', function(err) {
                             tvdb = new thetvdb(config.apiKeys.thetvdb);
                             tvdb.getBanners(show.providers.thetvdbId, function(error, response) {
                                 var posters = _.where(response, {BannerType: 'season', Season: req.params.seasonNumber});

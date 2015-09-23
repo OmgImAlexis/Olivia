@@ -59,4 +59,5 @@ config.js
 l.js
 log.txt
 posters/*
+!posters/placeholder.png
 ssl/
