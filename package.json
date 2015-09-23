@@ -4,7 +4,9 @@
   "description": "If Plex and SickRage had a V8 baby. It's still growing up so be gentle.",
   "main": "app.js",
   "scripts": {
-    "test": "git log --format='%aN <%aE>' | sort -f | uniq > CONTRIBUTORS.md"
+    "prestart": "mongod --fork --logpath /dev/null",
+    "start": "nodemon ./app.js",
+    "poststop": "mongo admin --eval 'db.shutdownServer()' > /dev/null"
   },
   "author": "Alexis Tyler <xo@wvvw.me> (http://wvvw.me/)",
   "license": "GPLv3",
@@ -30,6 +32,7 @@
     "mv": "^2.1.1",
     "node-ffprobe": "^1.2.2",
     "node-tvdb": "^1.3.1",
+    "open": "0.0.5",
     "passport": "^0.2.2",
     "passport-local": "^1.0.0",
     "stream-transcoder": "0.0.5",

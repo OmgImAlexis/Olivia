@@ -9,6 +9,7 @@ var express = require('express'),
     logger = require('express-logger'),
     mongoose = require('mongoose'),
     fs = require('fs'),
+    open = require("open"),
     compress = require('compression'),
     passport = require('passport'),
     config = require('./config/config.js'),
@@ -76,17 +77,6 @@ app.use(function(req, res, next){
     res.status(404).send('Either we lost this page or you clicked an incorrect link!');
 });
 
-fs.writeFile('./log.txt', '', function(){
-    console.log('Log file emptied.');
+http.createServer(app).listen(config.env.httpPort, '0.0.0.0', function(){
+    open("http://localhost:" + config.env.httpPort);
 });
-
-// app.listen(config.env.port, function() {
-//     console.log('Express server listening on port %s', config.env.port);
-// });
-
-
-http.createServer(app).listen(config.env.httpPort, '0.0.0.0');
-https.createServer({
-    key: fs.readFileSync('./ssl/key.pem', 'utf8'),
-    cert: fs.readFileSync('./ssl/server.crt', 'utf8')
-}, app).listen(config.env.httpsPort, '0.0.0.0');

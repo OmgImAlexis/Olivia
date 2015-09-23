@@ -52,7 +52,7 @@ function walkSync(dir, filelist) {
         }
     });
     return filelist;
-};
+}
 
 module.exports = (function() {
     var app = express.Router();
@@ -107,7 +107,7 @@ module.exports = (function() {
                 $lt: (new Date()).setTime((new Date()).getTime() + 7 * 86400000)
             }
         }).populate('showId').sort('airDate').exec(function(err, episodes){
-            var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+            var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             var groupedByDay = _.groupBy(episodes, function(episode) {
                 return days[(new Date(episode.airDate)).getDay()];
             });
@@ -189,7 +189,7 @@ module.exports = (function() {
                                         unProcessed.push({
                                             file: file,
                                             data: data
-                                        })
+                                        });
                                         callback();
                                     }
                                 });
@@ -207,7 +207,7 @@ module.exports = (function() {
                 }
             });
         }, function done() {
-            console.log('done')
+            console.log('done');
             res.send({
                 unProcessed: unProcessed,
                 processed: processed,

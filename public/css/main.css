@@ -431,3 +431,14 @@ form input {
      left:5px;
      top:20px;
 }
+
+/*
+    Odd and even for tables
+*/
+
+table.shows tbody tr:nth-child(odd){
+    background-color: #676767;
+}
+table.shows tbody tr:nth-child(even){
+    background-color: #4E4E4E;
+}

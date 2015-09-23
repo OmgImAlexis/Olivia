@@ -26,7 +26,7 @@ module.exports = (function() {
                         season.episodes = season.episodes.filter(function(episode){
                             return episode.download ? episode : false;
                         });
-                        callback()
+                        callback();
                     });
                 }, function (err) {
                     show.seasons = show.seasons.filter(function(season){

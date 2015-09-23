@@ -1,6 +1,6 @@
 extends ../layouts/admin
 
-block beforeContent
+block scripts
     script.
         $('input#showSearch').on('keyup', function(e){
             if(e.keyCode == 8){
@@ -39,9 +39,8 @@ block content
             tbody
                 - var odd = true;
                 - for show in shows
-                    - odd = (odd ? false : true);
                     -var progress = (show.downloadCount + show.snatchedCount) / show.episodeCount * 100;
-                    tr(style="background-color: " + (odd ? '#676767' : '#4E4E4E') + ";", data-show-title=show.title, data-show-network=show.network.title)
+                    tr(data-show-title=show.title, data-show-network=show.network.title)
                         td.col-checkbox
                             input(type="checkbox")
                         - var numbersOfWeek = {sunday: 0, monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6};

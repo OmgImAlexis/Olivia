@@ -38,13 +38,9 @@ module.exports = (function() {
     var app = express.Router();
 
     app.get('/show/:showId', function(req, res){
-        if(req.query.type == 'banner'){
-            var filePath = config.posterLocation  + '/show/' + req.params.showId + '/show.banner';
-        } else {
-            var filePath = config.posterLocation  + '/show/' + req.params.showId + '/show.poster';
-        }
+        var filePath = config.posterLocation  + '/show/' + req.params.showId + '/show.' + (req.query.type == 'banner' ? 'banner' : 'poster');
         fs.stat(filePath, function(err, stat) {
-            if(err == null){
+            if(err === null){
                 res.sendFile(filePath, {
                     maxAge: 30672000
                 });
@@ -56,11 +52,7 @@ module.exports = (function() {
                             tvdb = new thetvdb(config.apiKeys.thetvdb);
                             tvdb.getBanners(show.providers.thetvdbId, function(error, response) {
                                 if(error) res.send(error);
-                                if(req.query.type == 'banner'){
-                                    var posters = _.where(response, { BannerType: 'series' });
-                                } else {
-                                    var posters = _.where(response, { BannerType: 'poster' });
-                                }
+                                var posters = _.where(response, { BannerType: (req.query.type == 'banner' ? 'series' : 'poster') });
                                 if(posters.length){
                                     var file = fs.createWriteStream(filePath);
                                     var request = http.get('http://www.thetvdb.com/banners/' + posters[0].BannerPath, function(response) {
@@ -92,7 +84,7 @@ module.exports = (function() {
     app.get('/show/:showId/:seasonNumber', function(req, res){
         var filePath = config.posterLocation  + '/show/' + req.params.showId + '/' + req.params.seasonNumber + '/season.poster';
         fs.stat(filePath, function(err, stat) {
-            if(err == null){
+            if(err === null){
                 res.sendFile(filePath);
             } else {
                 Show.findOne({_id: req.params.showId}, function(err, show){
@@ -133,7 +125,7 @@ module.exports = (function() {
     app.get('/show/:showId/:seasonNumber/:episodeNumber', function(req, res){
         var filePath = config.posterLocation  + '/show/' + req.params.showId + '/' + req.params.seasonNumber + '/' + req.params.episodeNumber + '.poster';
         fs.stat(filePath, function(err, stat) {
-            if(err == null){
+            if(err === null){
                 res.sendFile(filePath);
             } else {
                 Show.findOne({_id: req.params.showId}, function(err, show){

@@ -45,7 +45,7 @@ module.exports = (function() {
                             },
                             function(network, callback){
                                 var genres = [];
-                                var thetvdbGenres = thetvdbShow['Genre'].split('|').splice(1).slice(0, -1);
+                                var thetvdbGenres = thetvdbShow.Genre.split('|').splice(1).slice(0, -1);
                                 async.eachSeries(thetvdbGenres, function i(genreTitle, callback) {
                                     Genre.findOne({title: genreTitle}).exec(function(err, genre){
                                         if(err) callback(err);
@@ -64,7 +64,7 @@ module.exports = (function() {
                             },
                             function(network, genres, callback){
                                 var actors = [];
-                                var thetvdbActors = thetvdbShow['Actors'].split('|').splice(1).slice(0, -1);
+                                var thetvdbActors = thetvdbShow.Actors.split('|').splice(1).slice(0, -1);
                                 async.eachSeries(thetvdbActors, function i(actorName, callback) {
                                     Actor.findOne({name: actorName}).exec(function(err, actor){
                                         if(err) callback(err);
@@ -85,7 +85,7 @@ module.exports = (function() {
                                 Show.findOne({title: req.body.SeriesName}).exec(function(err, show){
                                     if(err) res.send(err);
                                     if(!show) {
-                                        var show = new Show({
+                                        show = new Show({
                                             providers: {
                                                 thetvdbId: req.body.seriesid,
                                                 imdbId: req.body.IMDB_ID,
@@ -93,9 +93,9 @@ module.exports = (function() {
                                             },
                                             title: req.body.SeriesName,
                                             overview: req.body.Overview,
-                                            dayOfWeek: thetvdbShow['Airs_DayOfWeek'],
-                                            runTime: thetvdbShow['Runtime'],
-                                            rating: thetvdbShow['Rating'],
+                                            dayOfWeek: thetvdbShow.Airs_DayOfWeek,
+                                            runTime: thetvdbShow.Runtime,
+                                            rating: thetvdbShow.Rating,
                                             network: network.id,
                                             seasons: [],
                                             actors: actors,

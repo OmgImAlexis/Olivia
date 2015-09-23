@@ -48,7 +48,7 @@ module.exports = (function() {
         if(provider == 'thetvdb') {
             var TVDB = require("node-tvdb");
             var tvdb = new TVDB(config.apiKeys.thetvdb);
-            if(showName.trim() == ''){
+            if(showName.trim() === ''){
                 res.send({
                     error: 'No show entered?'
                 });
