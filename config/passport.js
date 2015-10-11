@@ -43,7 +43,7 @@ exports = module.exports = function(app, passport) {
                 if (user) {
                     return done(null, false, { message: 'That username is already taken.' });
                 } else {
-                    var user = new User({
+                    user = new User({
                         username: username,
                         email: req.body.email,
                         password: password
