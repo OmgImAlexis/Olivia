@@ -4,11 +4,7 @@ var express  = require('express'),
     passport = require('passport'),
     async = require('async'),
     _ = require('underscore'),
-    Show  = require('../models/Show'),
-    Season  = require('../models/Season'),
-    Episode  = require('../models/Episode'),
-    Genre  = require('../models/Genre'),
-    User  = require('../models/User');
+    models = require('models');
 
 module.exports = (function() {
     var app = express.Router();

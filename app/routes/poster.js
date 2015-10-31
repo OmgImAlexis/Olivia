@@ -11,20 +11,16 @@ var express  = require('express'),
     fs = require('fs'),
     util = require('util'),
     mkdirp = require('mkdirp'),
+    nconf = require('nconf'),
     thetvdb = require('node-tvdb'),
-    Show  = require('../models/Show'),
-    User  = require('../models/User'),
-    Quality  = require('../models/Quality'),
-    Episode  = require('../models/Episode'),
-    Network  = require('../models/Network'),
-    Quality  = require('../models/Quality'),
-    Download  = require('../models/Download');
+    models = require('models');
 
 module.exports = (function() {
-    var app = express.Router();
+    var app = express.Router(),
+        tvdb = new thetvdb(nconf.get('apiKeys:thetvdb'));
 
     app.get('/show/:showId', function(req, res){
-        var filePath = config.posterLocation  + '/show/' + req.params.showId + '/show.' + (req.query.type == 'banner' ? 'banner' : 'poster');
+        var filePath = path.resolve(__dirname + '/tmp/posters/show/' + req.params.showId + '/show.' + (req.query.type == 'banner' ? 'banner' : 'poster'));
         fs.stat(filePath, function(err, stat) {
             if(err === null){
                 res.sendFile(filePath, {
@@ -34,9 +30,8 @@ module.exports = (function() {
                 Show.findOne({_id: req.params.showId}, function(err, show){
                     if(err) res.send({error: err});
                     if(show.providers.thetvdbId){
-                        mkdirp(config.posterLocation  + '/show/' + req.params.showId + '/', function(err) {
+                        mkdirp(path.resolve(__dirname + '/tmp/posters/show/' + req.params.showId + '/'), function(err) {
                             if(err) console.error(err);
-                            tvdb = new thetvdb(config.apiKeys.thetvdb);
                             tvdb.getBanners(show.providers.thetvdbId, function(error, response) {
                                 if(error) res.send(error);
                                 var posters = _.where(response, { BannerType: (req.query.type == 'banner' ? 'series' : 'poster') });
@@ -51,7 +46,7 @@ module.exports = (function() {
                                         });
                                     });
                                 } else {
-                                    filePath = config.posterLocation  + '/placeholder.png';
+                                    filePath = path.resolve(__dirname + '/tmp/posters/placeholder.png');
                                     res.sendFile(filePath, {
                                         maxAge: 30672000
                                     });
@@ -78,7 +73,6 @@ module.exports = (function() {
                     if(err) res.send({error: err});
                     if(show.providers.thetvdbId){
                         mkdirp(config.posterLocation  + '/show/' + req.params.showId + '/' + req.params.seasonNumber + '/', function(err) {
-                            tvdb = new thetvdb(config.apiKeys.thetvdb);
                             tvdb.getBanners(show.providers.thetvdbId, function(error, response) {
                                 var posters = _.where(response, {BannerType: 'season', Season: req.params.seasonNumber});
                                 var file = fs.createWriteStream(filePath);
@@ -119,7 +113,6 @@ module.exports = (function() {
                     if(err) res.send({error: err});
                     if(show.providers.thetvdbId){
                         mkdirp(config.posterLocation  + '/show/' + req.params.showId + '/season/' + req.params.seasonNumber + '/', function(err) {
-                            tvdb = new thetvdb(config.apiKeys.thetvdb);
                             tvdb.getBanners(show.providers.thetvdbId, function(error, response) {
                                 var posters = _.where(response, {BannerType: 'season', Season: req.params.seasonNumber});
                                 var file = fs.createWriteStream(filePath);

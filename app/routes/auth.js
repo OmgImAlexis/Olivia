@@ -2,7 +2,7 @@ var express  = require('express'),
     bcrypt = require('bcrypt'),
     mongoose = require('mongoose'),
     passport = require('passport'),
-    User  = require('../models/User');
+    models = require('models');
 
 module.exports = (function() {
     var app = express.Router();

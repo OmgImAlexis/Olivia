@@ -4,16 +4,13 @@ var express  = require('express'),
     passport = require('passport'),
     async = require('async'),
     _ = require('underscore'),
-    Show  = require('../../models/Show'),
-    Season  = require('../../models/Season'),
-    Episode  = require('../../models/Episode'),
-    User  = require('../../models/User'),
-    Network  = require('../../models/Network'),
-    Genre  = require('../../models/Genre');
-    Actor  = require('../../models/Actor');
+    nconf = require('nconf'),
+    thetvdb = require('node-tvdb'),
+    models = require('models');
 
 module.exports = (function() {
-    var app = express.Router();
+    var app = express.Router(),
+        tvdb = new thetvdb(nconf.get('apiKeys:thetvdb'));
 
     app.get('/new', function(req, res){
         res.render('admin/shows/new');
@@ -25,8 +22,6 @@ module.exports = (function() {
                 if(show){
                     res.redirect('/admin/show/' + show.id);
                 } else {
-                    var TVDB = require("node-tvdb");
-                    var tvdb = new TVDB(config.apiKeys.thetvdb);
                     tvdb.getSeriesAllById(req.body.seriesid, function(err, thetvdbShow) {
                         if(err) res.send(err);
                         async.waterfall([

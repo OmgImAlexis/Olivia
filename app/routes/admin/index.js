@@ -7,17 +7,13 @@ var express  = require('express'),
     http = require('http'),
     path = require('path'),
     _ = require('underscore'),
-    TVDB = require('node-tvdb'),
-    tvdb = new TVDB(config.apiKeys.thetvdb),
-    Show  = require('../../models/Show'),
-    User  = require('../../models/User'),
-    Quality  = require('../../models/Quality'),
-    Episode  = require('../../models/Episode'),
-    Download  = require('../../models/Download'),
-    Network  = require('../../models/Network');
+    nconf = require('nconf'),
+    thetvdb = require('node-tvdb'),
+    models = require('models');
 
 module.exports = (function() {
-    var app = express.Router();
+    var app = express.Router(),
+        tvdb = new thetvdb(nconf.get('apiKeys:thetvdb'));
 
     app.get('/', function(req, res){
         Show.find({}).populate('quality network').exec(function(err, shows){
@@ -45,8 +41,6 @@ module.exports = (function() {
         var provider = req.body.provider || req.query.provider;
         var all = (req.body.all || req.query.all) ? true : false;
         if(provider == 'thetvdb') {
-            var TVDB = require("node-tvdb");
-            var tvdb = new TVDB(config.apiKeys.thetvdb);
             if(showName.trim() === ''){
                 res.send({
                     error: 'No show entered?'
@@ -67,17 +61,15 @@ module.exports = (function() {
             res.send({
                 error: 'That provider doesn\'t exist on this branch, maybe try switching to the dev branch?'
             });
+            log.error({
+                status: '404',
+                pageUrl: req.originalUrl
+            });
         }
     });
 
     app.get('/logs', function(req, res){
-        var logPath = path.resolve(__dirname, '../log.txt');
-        fs.readFile(logPath, 'utf8', function (err, log) {
-            if(err) console.log(err);
-            res.render('admin/log', {
-                log: log
-            });
-        });
+        res.send({error: 'Nope!'});
     });
 
     app.get('/settings/general', function(req, res){

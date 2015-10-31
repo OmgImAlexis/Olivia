@@ -12,14 +12,8 @@ var express  = require('express'),
     util = require('util'),
     guessit = require('guessit-wrapper'),
     mv = require('mv'),
-    thetvdb = require('node-tvdb'),
-    Show  = require('../models/Show'),
-    User  = require('../models/User'),
-    Quality  = require('../models/Quality'),
-    Episode  = require('../models/Episode'),
-    Network  = require('../models/Network'),
-    Quality  = require('../models/Quality'),
-    Download  = require('../models/Download');
+    nconf = require('nconf'),
+    thetvdb = require('node-tvdb');
 
 // Makes sure the dir exists if not it makes it.
 function ensureExists(path, mask, cb) {
@@ -54,7 +48,8 @@ function walkSync(dir, filelist) {
 }
 
 module.exports = (function() {
-    var app = express.Router();
+    var app = express.Router(),
+        tvdb = new thetvdb(nconf.get('apiKeys:thetvdb'));
 
     app.get('/', function(req, res){
         Show.find({}).populate('quality network').exec(function(err, shows){

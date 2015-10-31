@@ -1,3 +1,6 @@
+// This fixes the need for ../../../ with long paths especially when we use things in the models dir.
+require('app-module-path').addPath(__dirname + '/app');
+
 var express = require('express'),
     http = require('http'),
     nconf = require('nconf'),
@@ -10,13 +13,28 @@ var express = require('express'),
     mongoose = require('mongoose'),
     fs = require('fs'),
     open = require("open"),
+    bunyan = require('bunyan'),
     compression = require('compression'),
     passport = require('passport'),
-    User = require('./app/models/User'),
-    Show = require('./app/models/Show');
+    models = require('models');
 
 nconf.use('memory');
 nconf.argv().env().file({ file: './config.json' });
+
+var log = bunyan.createLogger({
+    name: 'Olivia',
+    version: require('./package.json').version,
+    streams: [
+        {
+            level: 'info',
+            stream: process.stdout // log INFO and above to stdout
+        },
+        {
+            level: 'error',
+            path: 'logs/error.log' // log ERROR and above to a file
+        }
+    ]
+});
 
 mongoose.connect('mongodb://' + nconf.get('database:host') + ':' + nconf.get('database:port') + '/' + nconf.get('database:collection'), function(err){
     if(err){ console.log('Cannot connect to mongodb, please check your config.json'); process.exit(1); }
@@ -29,7 +47,7 @@ app.disable('x-powered-by');
 app.set('views', __dirname + '/app/views');
 app.set('view engine', 'jade');
 app.use(compression());
-app.use(express.static(__dirname + '/public', { maxAge: 86400000 }));
+app.use(express.static(__dirname + '/app/public', { maxAge: 86400000 }));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({
     extended: true
@@ -73,6 +91,10 @@ app.use('/api', require('./app/routes/api'));
 
 app.use(function(req, res, next){
     res.status(404).send('Either we lost this page or you clicked an incorrect link!');
+    log.warn({
+        status: '404',
+        pageUrl: req.originalUrl
+    });
 });
 
 http.createServer(app).listen(nconf.get('web:port'), '0.0.0.0', function(){
