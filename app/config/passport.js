@@ -1,10 +1,10 @@
+var bcrypt = require('bcrypt'),
+    mongoose = require('mongoose'),
+    LocalStrategy = require('passport-local').Strategy,
+    async = require('async'),
+    User  = require('../models/User');
+
 exports = module.exports = function(app, passport) {
-    var bcrypt = require('bcrypt'),
-        mongoose = require('mongoose'),
-        LocalStrategy = require('passport-local').Strategy,
-        async = require('async'),
-        config = require('./config.js'),
-        User  = require('../models/User');
 
     passport.serializeUser(function(user, done) {
         done(null, user.id);
