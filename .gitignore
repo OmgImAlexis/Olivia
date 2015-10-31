@@ -50,7 +50,3 @@ config.json
 posters
 !posters/placeholder.png
 ssl
-
-# Logs & stuff that's only temp
-tmp
-logs
