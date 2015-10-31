@@ -45,7 +45,7 @@ module.exports = (function() {
             if(show){
                 show.remove(function (err) {
                     if(err) res.send(err);
-                    else res.send({message: 'Deleted'});
+                    res.send({message: 'Deleted'});
                 });
             } else {
                 res.send({

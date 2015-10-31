@@ -19,8 +19,8 @@ module.exports = (function() {
     var app = express.Router(),
         tvdb = new thetvdb(nconf.get('apiKeys:thetvdb'));
 
-    app.get('/show/:showId', function(req, res){
-        var filePath = path.resolve(__dirname + '/tmp/posters/show/' + req.params.showId + '/show.' + (req.query.type == 'banner' ? 'banner' : 'poster'));
+    app.get('/show/:showId', function(req, res, next){
+        var filePath = path.resolve(__dirname + '../tmp/posters/show/' + req.params.showId + '/show.' + (req.query.type == 'banner' ? 'banner' : 'poster'));
         fs.stat(filePath, function(err, stat) {
             if(err === null){
                 res.sendFile(filePath, {
@@ -30,7 +30,7 @@ module.exports = (function() {
                 Show.findOne({_id: req.params.showId}, function(err, show){
                     if(err) res.send({error: err});
                     if(show.providers.thetvdbId){
-                        mkdirp(path.resolve(__dirname + '/tmp/posters/show/' + req.params.showId + '/'), function(err) {
+                        mkdirp(path.resolve(__dirname + '../tmp/posters/show/' + req.params.showId + '/'), function(err) {
                             if(err) console.error(err);
                             tvdb.getBanners(show.providers.thetvdbId, function(error, response) {
                                 if(error) res.send(error);
@@ -46,10 +46,7 @@ module.exports = (function() {
                                         });
                                     });
                                 } else {
-                                    filePath = path.resolve(__dirname + '/tmp/posters/placeholder.png');
-                                    res.sendFile(filePath, {
-                                        maxAge: 30672000
-                                    });
+                                    next();
                                 }
                             });
                         });
@@ -63,8 +60,8 @@ module.exports = (function() {
         });
     });
 
-    app.get('/show/:showId/:seasonNumber', function(req, res){
-        var filePath = config.posterLocation  + '/show/' + req.params.showId + '/' + req.params.seasonNumber + '/season.poster';
+    app.get('/show/:showId/:seasonNumber', function(req, res, next){
+        var filePath = path.resolve(__dirname + '../tmp/posters/show/' + req.params.showId + '/' + req.params.seasonNumber + '/season.poster');
         fs.stat(filePath, function(err, stat) {
             if(err === null){
                 res.sendFile(filePath);
@@ -86,10 +83,7 @@ module.exports = (function() {
                                         });
                                     });
                                 } else {
-                                    filePath = config.posterLocation  + '/placeholder.png';
-                                    res.sendFile(filePath, {
-                                        maxAge: 30672000
-                                    });
+                                    next();
                                 }
                             });
                         });
@@ -103,8 +97,8 @@ module.exports = (function() {
         });
     });
 
-    app.get('/show/:showId/:seasonNumber/:episodeNumber', function(req, res){
-        var filePath = config.posterLocation  + '/show/' + req.params.showId + '/' + req.params.seasonNumber + '/' + req.params.episodeNumber + '.poster';
+    app.get('/show/:showId/:seasonNumber/:episodeNumber', function(req, res, next){
+        var filePath = path.resolve(__dirname + '../tmp/posters/show/' + req.params.showId + '/' + req.params.seasonNumber + '/' + req.params.episodeNumber + '.poster');
         fs.stat(filePath, function(err, stat) {
             if(err === null){
                 res.sendFile(filePath);
@@ -112,7 +106,7 @@ module.exports = (function() {
                 Show.findOne({_id: req.params.showId}, function(err, show){
                     if(err) res.send({error: err});
                     if(show.providers.thetvdbId){
-                        mkdirp(config.posterLocation  + '/show/' + req.params.showId + '/season/' + req.params.seasonNumber + '/', function(err) {
+                        mkdirp(cpath.resolve(__dirname + '../tmp/posters/show/' + req.params.showId + '/season/' + req.params.seasonNumber + '/'), function(err) {
                             tvdb.getBanners(show.providers.thetvdbId, function(error, response) {
                                 var posters = _.where(response, {BannerType: 'season', Season: req.params.seasonNumber});
                                 var file = fs.createWriteStream(filePath);
@@ -124,10 +118,7 @@ module.exports = (function() {
                                 //         });
                                 //     });
                                 // } else {
-                                    filePath = config.posterLocation  + '/placeholder.png';
-                                    res.sendFile(filePath, {
-                                        maxAge: 30672000
-                                    });
+                                    next();
                                 // }
                             });
                         });
@@ -138,6 +129,13 @@ module.exports = (function() {
                     }
                 });
             }
+        });
+    });
+
+    app.get(function(req, res){
+        var filePath = path.resolve(__dirname + '../tmp/posters/placeholder.png');
+        res.sendFile(filePath, {
+            maxAge: 30672000
         });
     });
 
