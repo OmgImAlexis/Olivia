@@ -1,36 +1,40 @@
+/* global Episode:true */
+/* global Show:true */
+/* global Download:true */
+
 var express  = require('express'),
-    bcrypt = require('bcrypt'),
-    mongoose = require('mongoose'),
-    passport = require('passport'),
     async = require('async'),
     fs = require('fs'),
-    http = require('http'),
-    path = require('path'),
     _ = require('underscore'),
-    http = require('http'),
     fs = require('fs'),
-    util = require('util'),
     guessit = require('guessit-wrapper'),
     mv = require('mv'),
     nconf = require('nconf'),
-    thetvdb = require('node-tvdb');
+    kat = require('kat-api'),
+    async = require('async'),
+    guessit = require('guessit-wrapper');
 
 // Makes sure the dir exists if not it makes it.
 function ensureExists(path, mask, cb) {
-    if (typeof mask == 'function') { // allow the `mask` parameter to be optional
+    if (typeof mask === 'function') { // allow the `mask` parameter to be optional
         cb = mask;
         mask = 0755;
     }
     fs.mkdir(path, mask, function(err) {
         if (err) {
-            if (err.code == 'EEXIST') cb(null); // ignore the error if the folder already exists
-            else cb(err); // something else went wrong
-        } else cb(null); // successfully created folder
+            if (err.code === 'EEXIST') {
+                cb(null); // ignore the error if the folder already exists
+            } else {
+                cb(err); // something else went wrong
+            }
+        } else {
+            cb(null); // successfully created folder
+        }
     });
 }
 
 function walkSync(dir, filelist) {
-    if( dir[dir.length-1] != '/'){
+    if( dir[dir.length-1] !== '/'){
         dir = dir.concat('/');
     }
     var fs = fs || require('fs'),
@@ -48,8 +52,7 @@ function walkSync(dir, filelist) {
 }
 
 module.exports = (function() {
-    var app = express.Router(),
-        tvdb = new thetvdb(nconf.get('apiKeys:thetvdb'));
+    var app = express.Router();
 
     app.get('/', function(req, res){
         Show.find({}).populate('quality network').exec(function(err, shows){
@@ -65,6 +68,7 @@ module.exports = (function() {
                     });
                 });
             }, function(err) {
+                if(err) { console.log(err); }
                 shows = shows.filter(function(show){
                     return show.downloadCount + show.snatchedCount > 0 ? show : '';
                 });
@@ -79,14 +83,15 @@ module.exports = (function() {
         Download.find({}).sort('_id').populate('episode movie').exec(function(err, downloads){
             async.each(downloads, function (download, callback) {
                 if(download.episode){
-                    download.episode.populate({path: 'showId'}, function(err, result){
-                        if(err) console.log(err);
+                    download.episode.populate({path: 'showId'}, function(err){
+                        if(err) { console.log(err); }
                         callback();
                     });
                 } else {
                     callback();
                 }
             }, function (err) {
+                if(err) { console.log(err); }
                 res.render('history', {
                     downloads: downloads
                 });
@@ -114,8 +119,8 @@ module.exports = (function() {
     app.get('/postProcess', function(req, res){
         var unProcessed = [];
         var processed = [];
-        var downloadPath = config.downloadPath;
-        var processedPath = config.processedPath;
+        var downloadPath = nconf.get('path:download');
+        var processedPath = nconf.get('path:processed');
         var files = walkSync(downloadPath);
         async.eachSeries(files, function i(file, callback) {
             var originalFile = file;
@@ -123,16 +128,16 @@ module.exports = (function() {
             file = file.split('/');
             file = file[file.length-1];
             guessit.parseName(file).then(function (data) {
-                if(data.mimetype == 'text/plain' || data.type == 'episodeinfo'){
+                if(data.mimetype === 'text/plain' || data.type === 'episodeinfo'){
                     console.log('Not episode or movie.');
                     callback();
-                } else if(data.type == 'episode'){
+                } else if(data.type === 'episode'){
                     Show.findOne({ titleLowerCase: (data.year ? data.series + ' (' + data.year + ')' : data.series).toLowerCase() }).exec(function(err, show){
-                        if(err) console.log(err);
+                        if(err) { console.log(err); }
                         if(show){
                             async.eachSeries((data.episodeList ? data.episodeList : [data.episodeNumber]), function i(dataEpisode, callback) {
                                 Episode.findOne({showId: show.id, episodeNumber: dataEpisode, seasonNumber: data.season}).exec(function(err, episode){
-                                    if(err) console.log(err);
+                                    if(err) { console.log(err); }
                                     if(episode){
                                         var download = new Download({
                                             codec: data.videoCodec,
@@ -146,16 +151,16 @@ module.exports = (function() {
                                         });
                                         console.log(data.format);
                                         download.save(function(err, download){
-                                            if(err) console.log(err);
+                                            if(err) { console.log(err); }
                                             if(download){
                                                 console.log('Saved download');
                                                 episode.download = download.id;
                                                 episode.save(function(err, episode){
                                                     ensureExists(processedPath + show.title + '/', 0744, function(err) {
-                                                        if(err) console.log(err);
-                                                        if((data.episodeList && data.episodeList.indexOf(dataEpisode) == data.episodeList.length-1 ) || data.episodeNumber){
+                                                        if(err) { console.log(err); }
+                                                        if((data.episodeList && data.episodeList.indexOf(dataEpisode) === data.episodeList.length-1 ) || data.episodeNumber){
                                                             mv(originalFile, processedPath + show.title + '/S' + ('0' + episode.seasonNumber).slice(-2) + 'E' + ('0' + dataEpisode).slice(-2) + ' - ' + episode.title + '.' + data.container, function(err) {
-                                                                if(err) console.log(err);
+                                                                if(err) { console.log(err); }
                                                                 processed.push({
                                                                     file: file,
                                                                     download: download,
@@ -206,6 +211,63 @@ module.exports = (function() {
                 unProcessed: unProcessed,
                 processed: processed,
                 files: files
+            });
+        });
+    });
+
+    app.get('/manualSearch', function(req, res){
+        Episode.find({
+            airDate: {
+                $gte: new Date(),
+                $lt: (new Date()).setTime((new Date()).getTime() + 7 * 86400000)
+            }
+        }).populate('showId quality').sort('airDate').lean().exec(function(err, episodes){
+            var wanted = [],
+                notWanted = [];
+            episodes.forEach(function(episode){
+                kat.search({
+                    query: episode.showId.title,
+                    category: 'tv',
+                    season: episode.seasonNumber,
+                    minSeeds: '1',
+                    sortBy: 'seeders',
+                    order: 'desc',
+                    language: 'en'
+                }).then(function(data) {
+                    async.each(data.results, function(torrent, callback) {
+                        guessit.parseName(torrent.title).then(function(guess) {
+                            var wantedQuality = episode.quality.map(function(item){
+                                return item.title;
+                            });
+                            if(wantedQuality.indexOf(guess.format) > -1){
+                                wanted.push({
+                                    guess: guess,
+                                    torrent: torrent
+                                });
+                                callback(null);
+                            } else {
+                                notWanted.push({
+                                    guess: guess,
+                                    torrent: torrent
+                                });
+                                callback(null);
+                            }
+                        });
+                    }, function(err) {
+                        if(err) {
+                            console.log("There was an error" + err);
+                        } else {
+                            res.send({
+                                wanted: wanted,
+                                notWanted: notWanted
+                            });
+
+                            console.log('wanted: ', wanted.length);
+                            console.log('notWanted: ', notWanted.length);
+                        }
+                    });
+
+                });
             });
         });
     });

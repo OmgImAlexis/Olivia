@@ -9,14 +9,12 @@ var express = require('express'),
     methodOverride = require('method-override'),
     session = require('express-session'),
     MongoStore = require('connect-mongo')(session),
-    logger = require('express-logger'),
     mongoose = require('mongoose'),
-    fs = require('fs'),
-    open = require("open"),
     bunyan = require('bunyan'),
     compression = require('compression'),
-    passport = require('passport'),
-    models = require('models');
+    passport = require('passport');
+
+require('models');
 
 nconf.use('memory');
 nconf.argv().env().file({ file: './config.json' });
@@ -89,7 +87,7 @@ app.use('/poster', require('./app/routes/poster'));
 // API views
 app.use('/api', require('./app/routes/api'));
 
-app.use(function(req, res, next){
+app.use(function(req, res){
     res.status(404).send('Either we lost this page or you clicked an incorrect link!');
     log.warn({
         status: '404',
