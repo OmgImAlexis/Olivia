@@ -9,6 +9,10 @@ var episodeSchema = mongoose.Schema({
     seasonNumber: Number,
     title: String,
     airDate: Date,
+    quality: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Quality'
+    },
     download: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Download'
